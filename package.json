@@ -21,6 +21,7 @@
     "livescript": "^1.4.0",
     "mongoose": "^4.1.0",
     "nib": "^1.1.0",
+    "requirejs": "^2.1.20",
     "rimraf": "^2.4.2",
     "through2": "^2.0.0",
     "vinyl-fs-fake": "^1.1.0",
@@ -28,7 +29,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postinstall": "./gulp deploy && ./gulp --min"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,3 @@
+[submodule "prelude-ls"]
+	path = prelude-ls
+	url = https://github.com/gkz/prelude-ls
