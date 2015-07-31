@@ -24,6 +24,7 @@ class Router extends M.AppRouter
 		do
 			''          : 'main-route'
 			
+			'search'    : 'search'
 			'sign-in'   : 'sign-in'
 			'sign-up'   : 'sign-up'
 			'logout'    : 'logout'
@@ -34,7 +35,7 @@ class Router extends M.AppRouter
 			
 		|> Obj.map (-> it |> camelize)
 	
-	routes-required-auth: <[ sites materials logout ]>
+	routes-required-auth: <[ sites materials logout search ]>
 	
 	initialize: !(opts)->
 		super ...
@@ -110,3 +111,6 @@ class Router extends M.AppRouter
 	
 	materials: !->
 		console.info 'Materials route'
+	
+	search: !->
+		console.info 'Search route'
