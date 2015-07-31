@@ -6,8 +6,8 @@
     "url": "mongodb://localhost/uh"
   },
   "session": {
-    "cookieName": 'session',
-    "secret": 'blargadeeblargblarg',
+    "cookieName": "session",
+    "secret": "secretsalt",
     "duration": 86400000,
     "activeDuration": 300000
   }

@@ -9,6 +9,7 @@
     "browser-sync": "^2.8.1",
     "client-sessions": "^0.7.0",
     "colors": "^1.1.2",
+    "curlrequest": "^0.5.3",
     "express": "~3.4.8",
     "express-domain-middleware": "~0.1.0",
     "gulp": "^3.9.0",

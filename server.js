@@ -1,15 +1,15 @@
 
 'use strict';
 
-var cfg = require('./config.json');
-var express = require('express');
-var sessions    = require('client-sessions');
-var passport       = require('passport');
-var path = require('path');
-var jade = require('jade');
+var cfg      = require('./config.json');
+var express  = require('express');
+var sessions = require('client-sessions');
+var passport = require('passport');
+var path     = require('path');
+var jade     = require('jade');
 
 
-var routesIndex = require('./routes/index');
+var routesIndex  = require('./routes/index');
 var routesSocial = require('./routes/social');
 
 GLOBAL.U = {
