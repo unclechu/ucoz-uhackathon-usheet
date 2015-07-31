@@ -10,5 +10,5 @@ class Application extends M.Application
 		console.info "Application instance is initialized"
 	
 	on-start: !(opts)->
-		@root-view = new RootView el: @container
+		@root-view = new RootView el: @container .render!
 		B.history.start!

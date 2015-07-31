@@ -32,7 +32,7 @@ shim  = {}
 paths = {}
 map   = {}
 
-libs-paths =
+bower-libs-paths =
 	jquery:
 		"jquery/dist/jquery#{unless d then \.min else ''}"
 	underscore:
@@ -45,13 +45,17 @@ libs-paths =
 		"backbone.babysitter/lib/backbone.babysitter#{unless d then \.min else ''}"
 	marionette:
 		"marionette/lib/backbone.marionette#{unless d then \.min else ''}"
+	text:
+		"text/text"
 
 # bower prefix
-libs-paths |>= Obj.map (-> "bower/#{it}")
+bower-libs-paths |>= Obj.map (-> "bower/#{it}")
 
-paths <<< libs-paths <<< do
+paths <<< bower-libs-paths <<< do
 	jade:
 		"js/jade#{unless d then \.min else ''}"
+	tpl:
+		"js/build/utils/tpl"
 
 # static dir prefix
 paths |>= Obj.map (-> "#{cfg.static-dir}/#{it}")
@@ -69,6 +73,9 @@ requirejs.config {
 	paths
 	map
 }
+
+(B) <-! requirejs <[ backbone backbone.wreqr ]>
+B.Wreqr.radio.channel \global .reqres.set-handler \config -> cfg
 
 ($, app) <-! requirejs <[ jquery app ]>
 <-! $ # dom ready
