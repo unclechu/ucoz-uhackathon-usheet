@@ -18,6 +18,7 @@ class HeaderMenuListView extends M.CollectionView
 	initialize: !(opts)->
 		super ...
 		@auth-model = Wreqr.radio.reqres.request \global, \auth-model
+		@auth-model.on \change, @render, this
 	
 	filter: ->
 		@auth-model.get camelize \is-auth

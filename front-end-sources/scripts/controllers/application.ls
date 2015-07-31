@@ -18,6 +18,8 @@
 	controllers/router
 ]>
 
+{camelize} = require \prelude-ls
+
 class Application extends M.Application
 	
 	container: \body
@@ -30,7 +32,8 @@ class Application extends M.Application
 	on-start: !(opts)->
 		
 		const auth-model = Wreqr.radio.reqres.request \global, \auth-model
-		#auth-model.fetch! # TODO
+		auth-model.fetch error: !-> throw new Error 'Cannot fetch AuthModel'
+		auth-model.start-auto-fetch!
 		
 		@root-view = new RootView el: @container .render!
 		@header = new HeaderView!

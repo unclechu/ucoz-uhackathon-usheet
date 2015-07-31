@@ -1,35 +1,50 @@
 (
 	M
+	B
 	Wreqr
 ) <- define <[
 	marionette
+	backbone
 	backbone.wreqr
 ]>
 
-{camelize, Obj} = require \prelude-ls
+{camelize, Obj, all} = require \prelude-ls
 
 class Router extends M.AppRouter
 	
 	routes:
 		do
 			''          : 'main-route'
-			'*defaults' : 'not-found'
 			
 			'sign-in'   : 'sign-in'
 			'logout'    : 'logout'
 			'sites'     : 'sites'
 			'materials' : 'materials'
+			
+			'*defaults' : 'not-found'
 		|> Obj.map (-> it |> camelize)
 	
 	initialize: !(opts)->
 		super ...
 		@auth-model = Wreqr.radio.reqres.request \global, \auth-model
+		@auth-model.on \change, @check-auth, this
+	
+	routes-required-auth: <[ sites materials logout ]>
+	
+	check-auth: !->
+		const routes-required-auth = @routes-required-auth
+		if [
+			@auth-model.get camelize \is-auth |> (not)
+			B.history.fragment |> (in routes-required-auth)
+		] |> all
+			console.warn 'Lost authorization, redirecting to sign-in form'
+			B.history.navigate \sign-in, trigger: on
 	
 	main-route: !->
 		if @auth-model.get (camelize \is-auth)
-			void
+			B.history.navigate \sites,   trigger: on, replace: yes
 		else
-			void
+			B.history.navigate \sign-in, trigger: on, replace: yes
 	
 	not-found: !->
 		console.log \not-found-route
