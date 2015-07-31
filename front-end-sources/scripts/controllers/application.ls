@@ -1,6 +1,7 @@
 (
 	M
 	B
+	Wreqr
 	RootView
 	HeaderView
 	HeaderMenuListView
@@ -8,6 +9,7 @@
 ) <- define <[
 	marionette
 	backbone
+	backbone.wreqr
 	views/root
 	views/header
 	views/header/menu/list
@@ -24,6 +26,9 @@ class Application extends M.Application
 		console.info "Application instance is initialized"
 	
 	on-start: !(opts)->
+		
+		const auth-model = Wreqr.radio.reqres.request \global, \auth-model
+		#auth-model.fetch! # TODO
 		
 		@root-view = new RootView el: @container .render!
 		@header = new HeaderView!

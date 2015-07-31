@@ -74,8 +74,8 @@ requirejs.config {
 	map
 }
 
-(B) <-! requirejs <[ backbone backbone.wreqr ]>
-B.Wreqr.radio.channel \global .reqres.set-handler \config -> cfg
+(Wreqr) <-! requirejs <[ backbone.wreqr ]>
+Wreqr.radio.channel \global .reqres.set-handler \config -> cfg
 
 ($, app) <-! requirejs <[ jquery app ]>
 <-! $ # dom ready

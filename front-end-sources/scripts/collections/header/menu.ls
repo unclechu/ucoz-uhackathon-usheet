@@ -1,4 +1,10 @@
-(B, HeaderMenuModel) <- define <[ backbone models/header/menu ]>
+(
+	B
+	HeaderMenuModel
+) <- define <[
+	backbone
+	models/header/menu
+]>
 
 class HeaderMenuCollection extends B.Collection
 	model: HeaderMenuModel
