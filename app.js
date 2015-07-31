@@ -1,8 +1,11 @@
+#!/usr/bin/env node
+
 var cfg = require('./config.json');
 var express = require('express');
 var path = require('path');
 var jade = require('jade');
 var routes = require('./routes');
+
 GLOBAL.U = {
 	db   : require('./model/db')(cfg.db),
 	model: {
