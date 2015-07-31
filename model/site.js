@@ -38,6 +38,13 @@ var SiteSchema = mongoose.Schema({
 });
 
 
+//SiteSchema.path('url').validate(function (value) {
+//	this.url.replace(/https?:\/\//, '');
+//	
+//	return this.url.length > 5;
+//}, 'Invalid url');
+
+
 //SiteSchema.statics.getSites
 
 module.exports = mongoose.model('Site', SiteSchema);

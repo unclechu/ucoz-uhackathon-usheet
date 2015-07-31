@@ -20,10 +20,14 @@ module.exports = function(app) {
 			$.get('/logout').to(social.logout);
 			$.post('/logout').to(social.logout);
 			
+			$.get('/ulogin/callback').to(social.uloginCallback);
+			$.post('/ulogin/callback').to(social.uloginCallback);
+			
 			
 			$.bridge(social.authBridh, function($) {
 				$.bridge('/site', function($) {
 					$.get('/add').to(site.form);
+					$.post('/search').to(site.search);
 					$.post('/add').to(site.add);
 					$.post('/list').to(site.list);
 					$.post('/remove').to(site.remove);
@@ -35,7 +39,7 @@ module.exports = function(app) {
 			
 			
 			$.get('/user/create').to(index.createUser);
-			$.get('/search').to(index.search);
+			//$.get('/search').to(index.search);
 			$.get('/test2').to(function (req, res) {
 				setTimeout(function() {
 					throw new Error('1234');

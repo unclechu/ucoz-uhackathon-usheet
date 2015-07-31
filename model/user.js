@@ -10,7 +10,7 @@ var UserSchema = mongoose.Schema({
 	},
 	password: {
 		type     : String,
-		required : true
+		default: ''
 	},
 	uid: {
 		type     : Number,

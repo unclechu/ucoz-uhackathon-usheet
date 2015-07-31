@@ -3,7 +3,6 @@ extends ../layout
 block content
 	h1= title
 	form(name="add-estimation", method="post" action="/login")
-		a(href="/login/ucoz") a link
 		div.input
 			span.label Eimal
 			input(type="email", name="email")
@@ -12,3 +11,5 @@ block content
 			input(type="password", name="password")
 		div.actions
 			input(type="submit", value="login")
+	script(src="//ulogin.ru/js/ulogin.js")
+	div(id="uLogin" data-ulogin="display=panel;fields=email,first_name,last_name;providers=uid;redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fulogin%2Fcallback")
