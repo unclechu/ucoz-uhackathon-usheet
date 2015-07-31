@@ -33,6 +33,7 @@
     "requirejs": "^2.1.20",
     "rimraf": "^2.4.2",
     "through2": "^2.0.0",
+    "ucoz-api": "^1.0.1",
     "vinyl-fs-fake": "^1.1.0",
     "yargs": "^3.16.1"
   },
