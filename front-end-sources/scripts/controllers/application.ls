@@ -45,5 +45,5 @@ class Application extends M.Application
 		@root-view.get-region \header .show @header
 		@header.get-region \menu .show @header-menu
 		
-		@router = new Router!
+		@router = new Router target-region: @root-view.get-region \body
 		B.history.start!

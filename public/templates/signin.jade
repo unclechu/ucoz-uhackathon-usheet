@@ -1,0 +1,27 @@
+.row.clearfix
+	.col-md-4.column
+	.col-md-4.column
+		.panel.panel-primary
+			.panel-heading Вход через uCoz
+			.panel-body
+				form.ucoz-auth
+					button.ucoz-enter.btn.btn-success Войти через uCoz
+		.panel.panel-info
+			.panel-heading Вход по логину и паролю
+			.panel-body
+				form.login-password-auth
+					.message
+					.form-group
+						label
+							span Логин
+							=' '
+							input.form-control(type='text' name='username')
+					.form-group
+						label
+							span Пароль
+							=' '
+							input.form-control(type='password' name='password')
+					button.enter.btn.btn-primary Войти
+					=' '
+					button.register.btn.btn-warning Регистрация
+	.col-md-4.column

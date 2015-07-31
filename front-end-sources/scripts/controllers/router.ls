@@ -2,10 +2,12 @@
 	M
 	B
 	Wreqr
+	SignInView
 ) <- define <[
 	marionette
 	backbone
 	backbone.wreqr
+	views/signin
 ]>
 
 {camelize, Obj, all} = require \prelude-ls
@@ -24,12 +26,14 @@ class Router extends M.AppRouter
 			'*defaults' : 'not-found'
 		|> Obj.map (-> it |> camelize)
 	
+	routes-required-auth: <[ sites materials logout ]>
+	
 	initialize: !(opts)->
 		super ...
 		@auth-model = Wreqr.radio.reqres.request \global, \auth-model
 		@auth-model.on \change, @check-auth, this
 	
-	routes-required-auth: <[ sites materials logout ]>
+	get-option: M.proxy-get-option
 	
 	check-auth: !->
 		const routes-required-auth = @routes-required-auth
@@ -41,22 +45,27 @@ class Router extends M.AppRouter
 			B.history.navigate \sign-in, trigger: on
 	
 	main-route: !->
+		console.info 'Main route'
 		if @auth-model.get (camelize \is-auth)
 			B.history.navigate \sites,   trigger: on, replace: yes
 		else
 			B.history.navigate \sign-in, trigger: on, replace: yes
 	
 	not-found: !->
-		console.log \not-found-route
+		console.info 'Not found route'
 	
 	sign-in: !->
-		console.log \sign-in-route
+		
+		console.info 'Sign in route'
+		
+		view = new SignInView!
+		@get-option (camelize \target-region) .show view
 	
 	logout: !->
-		console.log \logout-route
+		console.info 'Logout route'
 	
 	sites: !->
-		console.log \sites-route
+		console.info 'Sites route'
 	
 	materials: !->
-		console.log \materials-route
+		console.info 'Materials route'
