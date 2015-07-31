@@ -6,6 +6,7 @@
 	SignInView
 	SignUpView
 	WaitView
+	SitesListView
 ) <- define <[
 	jquery
 	marionette
@@ -14,6 +15,7 @@
 	views/signin
 	views/signup
 	views/wait
+	views/sites/list
 ]>
 
 {camelize, Obj, all} = require \prelude-ls
@@ -108,6 +110,8 @@ class Router extends M.AppRouter
 	
 	sites: !->
 		console.info 'Sites route'
+		view = new SitesListView!
+		@get-option (camelize \target-region) .show view
 	
 	materials: !->
 		console.info 'Materials route'
