@@ -155,6 +155,22 @@ gulp.task('requirejs', ['clean-requirejs'], function (cb) {
 });
 
 
+// minified jade.js
+
+gulp.task('clean-jadejs', function (cb) {
+	del(['public/js/jade.min.js'], cb);
+});
+
+gulp.task('jadejs', ['clean-jadejs'], function (cb) {
+	
+	gulp.src('public/js/jade.js')
+		.pipe(uglify({ preserveComments: 'some' }))
+		.pipe(rename(function (f) { f.basename += '.min'; }))
+		.pipe(gulp.dest('public/js'))
+		.on('end', cb);
+});
+
+
 // bower
 
 gulp.task('clean-bower', function (cb) {
@@ -203,6 +219,7 @@ gulp.task('watch', [
 
 gulp.task('deploy', [
 	'requirejs',
+	'jadejs',
 	'bower',
 ]);
 

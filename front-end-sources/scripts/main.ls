@@ -8,14 +8,14 @@
 	any
 } = require \prelude-ls
 
-html = document.get-elements-by-tag-name \html .0
+const html = document.get-elements-by-tag-name \html .0
 
 is-bool-field = (name)->
 	<[ is has ]> # prefixes
 	|> map (-> "#{it}-")
 	|> any (-> (name.index-of it) is 0)
 
-cfg =
+const cfg =
 	<[
 		is-debug
 		revision
@@ -26,29 +26,35 @@ cfg =
 	|> map (-> it.0 |>= camelize ; it                             )
 	|> pairs-to-obj
 
+const d = cfg.is-debug
+
 shim  = {}
 paths = {}
 map   = {}
 
-d = cfg.is-debug
 libs-paths =
 	jquery:
-		"jquery/dist/jquery#{unless d then '.min' else ''}"
+		"jquery/dist/jquery#{unless d then \.min else ''}"
 	underscore:
-		"underscore/underscore#{unless d then '-min' else ''}"
+		"underscore/underscore#{unless d then \-min else ''}"
 	backbone:
-		"backbone/backbone#{unless d then '-min' else ''}"
+		"backbone/backbone#{unless d then \-min else ''}"
 	\backbone.wreqr :
-		"backbone.wreqr/lib/backbone.wreqr#{unless d then '.min' else ''}"
+		"backbone.wreqr/lib/backbone.wreqr#{unless d then \.min else ''}"
 	\backbone.babysitter :
-		"backbone.babysitter/lib/backbone.babysitter#{unless d then '.min' else ''}"
+		"backbone.babysitter/lib/backbone.babysitter#{unless d then \.min else ''}"
 	marionette:
-		"marionette/lib/backbone.marionette#{unless d then '.min' else ''}"
+		"marionette/lib/backbone.marionette#{unless d then \.min else ''}"
 
-# add static directory prefix for libs paths
-libs-paths = libs-paths |> Obj.map (-> "#{cfg.static-dir}/bower/#{it}")
+# bower prefix
+libs-paths |>= Obj.map (-> "bower/#{it}")
 
-paths <<< libs-paths
+paths <<< libs-paths <<< do
+	jade:
+		"js/jade#{unless d then \.min else ''}"
+
+# static dir prefix
+paths |>= Obj.map (-> "#{cfg.static-dir}/#{it}")
 
 requirejs.config {
 	base-url: "#{cfg.static-dir}/js/build"
