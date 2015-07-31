@@ -35,9 +35,6 @@ class SignUpView extends M.LayoutView
 			delete @ajax
 		super ...
 	
-	on-render: !->
-		@ui.inputs.prop \autocomplete, \off
-	
 	ajax-block: !->
 		@ui.inputs.prop \disabled true
 	ajax-free: !->
