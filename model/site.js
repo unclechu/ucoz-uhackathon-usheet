@@ -1,18 +1,17 @@
 var mongoose = require('mongoose');
 
 var UserSchema = mongoose.Schema({
-	login: {
-		type     : String,
-		unique   : true,
-		required : true
-	},
-	password: {
+	url: {
 		type     : String,
 		required : true
 	},
-	uid: {
-		type     : Number,
-		//required : true
+	userId: {
+		type: mongoose.Types.ObjectId,
+		required: true
+	},
+	isAPI: {
+		type: Boolean,
+		default: false
 	}
 });
 

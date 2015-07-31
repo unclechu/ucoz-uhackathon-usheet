@@ -1,11 +1,15 @@
 var Route = {
 	
-	index: function(req, res) {
-		U.model.user.findOne({}).exec(function(err, user) {
-			console.log('index', err, user);
-			
-			res.render('pages/main.jade');
+	isAuth: function(req, res) {
+		res.json({
+			isAuth: !!req.session.userId
 		})
+	},
+	
+	index: function(req, res) {
+		console.log('req.user', req.session.userId);
+		
+		res.render('pages/main.jade');
 	},
 	
 	

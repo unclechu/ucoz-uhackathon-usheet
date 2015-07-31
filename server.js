@@ -3,9 +3,14 @@
 
 var cfg = require('./config.json');
 var express = require('express');
+var sessions    = require('client-sessions');
+var passport       = require('passport');
 var path = require('path');
 var jade = require('jade');
-var routes = require('./routes');
+
+
+var routesIndex = require('./routes/index');
+var routesSocial = require('./routes/social');
 
 GLOBAL.U = {
 	db    : require('./model/db')(cfg.db),
@@ -25,7 +30,21 @@ app.engine('jade', jade.__express);
 app.set('views', path.resolve(process.cwd(), 'templates'));
 app.set('view engine', 'jade');
 
+app.use(express.methodOverride());
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(express.cookieParser(cfg.session.secret));
+app.use(sessions(cfg.session));
+
+
+// Passport:
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(path.join('/', staticPath), express.static(staticPath));
+
+app.locals.isDebug  = cfg.isDebug ? true : false;
+app.locals.revision = revision;
 
 app.locals.staticFile = function (file) {
 	while (file.charAt(0) === '/') {
@@ -43,6 +62,8 @@ app.locals.staticDir = function (dir) {
 	}
 	return path.join('/', staticPath, dir);
 };
+
+
 app.use(function(req, res, next) {
 	res.ok = function(code){
 		return function(err,data){
@@ -60,23 +81,22 @@ app.use(function(req, res, next) {
 	
 	next();
 });
-app.get('/', routes.index);
-app.get('/user/create', routes.createUser);
-app.get('/search', routes.search);
-app.get('/test2', function (req, res) {
-	setTimeout(function() {
-		throw new Error('1234');
-		res.send('test');
-	}, 1000);
-});
 
-// Если не смогли никак обработать
-app.get('*', function(req, res){
-	res.status(404).send('Sorry, we cannot find that!');
+
+//
+var routes = require('./routes');
+app.use(function(req, res, next) {
+	app.router(req, res, next);
 });
+routes(app);
+//app.get('/', function(req, res){
+//	res.send('hello world');
+//});
+
 
 // обработка ошибок на уровне express
 app.use(function(err, req, res, next) {
+	console.log('error', err);
 	if (res.error) {
 		res.error(err);
 	} else {
