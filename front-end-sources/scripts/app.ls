@@ -1,6 +1,7 @@
-(M) <- define <[ marionette ]>
+(Application) <- define <[ controllers/application ]>
 
-initialize = ! ({ container = \body }) ->
-	console.log \hijack
+initialize = !({container=null})->
+	app = new Application {container}
+	app.start!
 
 {initialize}
