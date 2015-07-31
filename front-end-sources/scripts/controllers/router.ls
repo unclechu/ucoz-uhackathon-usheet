@@ -31,6 +31,7 @@ class Router extends M.AppRouter
 			'materials' : 'materials'
 			
 			'*defaults' : 'not-found'
+			
 		|> Obj.map (-> it |> camelize)
 	
 	routes-required-auth: <[ sites materials logout ]>
@@ -64,12 +65,24 @@ class Router extends M.AppRouter
 		B.history.navigate '', trigger: on, replace: yes
 	
 	sign-in: !->
+		
 		console.info 'Sign in route'
+		
+		if @auth-model.get camelize \is-auth
+			B.history.navigate '', trigger: on, replace: yes
+			return
+		
 		view = new SignInView!
 		@get-option (camelize \target-region) .show view
 	
 	sign-up: !->
+		
 		console.info 'Sign up route'
+		
+		if @auth-model.get camelize \is-auth
+			B.history.navigate '', trigger: on, replace: yes
+			return
+		
 		view = new SignUpView!
 		@get-option (camelize \target-region) .show view
 	
