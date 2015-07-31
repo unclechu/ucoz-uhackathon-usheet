@@ -1,2 +1,12 @@
-body
-	background red
+$static-path = '/public/'
+$icon-font-path = pathjoin($static-path, 'icons-fonts/')
+
+@require 'bootstrap'
+@require 'nib'
+
+html, body
+	height 100%
+
+@media (min-width $screen-md-min)
+	.v-stretchy
+		height 100%

@@ -4,9 +4,10 @@ html(lang=ru)
 		meta(charset='utf-8')
 		title= uSheet
 		
-		meta(name="author" content="Viacheslav Lotsmanov")
-		meta(name="author" content="Dmitriy Berezhnov"   )
+		meta(name='author' content='Viacheslav Lotsmanov')
+		meta(name='author' content='Dmitriy Berezhnov'   )
 		
-		
+		link(href=staticFile('css/build/main.css') type='text/css' rel='stylesheet')
+		script(src=staticFile('js/build/main.js'))
 	body
 		block content

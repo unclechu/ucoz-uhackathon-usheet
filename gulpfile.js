@@ -17,6 +17,7 @@ var
 	sourcemaps  = require('gulp-sourcemaps'),
 	vfsFake     = require('vinyl-fs-fake'),
 	through2    = require('through2'),
+	bootstrap   = require('bootstrap-styl'),
 	
 	utils       = require('./deploy-stuff/utils');
 
@@ -63,6 +64,7 @@ function stylesItemHandler(logName, file, enc, cb) {
 			compress: argv.min ? true : false,
 			use: [
 				nib(),
+				bootstrap(),
 				function (style) {
 					style.define('REVISION', REVISION);
 					style.define('STATIC_DIR', '/public/');
