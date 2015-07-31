@@ -1,4 +1,5 @@
 .idea
+*.fot
 
 node_modules
 bower_components

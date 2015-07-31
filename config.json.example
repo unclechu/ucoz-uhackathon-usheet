@@ -4,5 +4,11 @@
   "host": null,
   "db": {
     "url": "mongodb://localhost/uh"
+  },
+  "session": {
+    "cookieName": 'session',
+    "secret": 'blargadeeblargblarg',
+    "duration": 86400000,
+    "activeDuration": 300000
   }
 }

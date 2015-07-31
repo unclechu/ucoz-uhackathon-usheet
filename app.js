@@ -7,7 +7,7 @@ var domain = require('domain');
 var appDomain = domain.create(); // домен для ошибок, выпадающих из server
 
 appDomain.on('error', function(err) {
-	log.error("Fatal error catched: \n" + err.stack || err);
+	console.error("Fatal error catched: \n" + err.stack || err);
 	if ('development' != process.env.NODE_ENV) {
 		/*
 		 * для режима development не используем остановку программы(process.exit),
@@ -18,8 +18,10 @@ appDomain.on('error', function(err) {
 });
 
 process.on('uncaughtException', function(err) {
-	log.error('process.on.uncaughtException');
-	log.error(err.stack || err);
+	console.error(
+		'process.on.uncaughtException',
+		err.stack || err
+	);
 	process.exit(0);
 });
 
