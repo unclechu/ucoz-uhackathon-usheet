@@ -46,18 +46,28 @@ passport.use(new LocalStrategy({
 	});
 }));
 
-passport.serializeUser(function(user, done) {
-	console.log('serializeUser', user.id);
-	done(null, user.id);
+passport.serializeUser(function (user, done) {
+	console.log('serializeUser', user._id);
+	done(null, user._id);
 });
 
 
-passport.deserializeUser(function(id, done) {
-	U.model.user.findOne({login: id}, function(err, user){
-		console.log('deserializeUser', err, user, id);
-		err
-			? done(err)
-			: done(null,user);
+passport.deserializeUser(function (id, done) {
+	
+	U.model.user.findOne({ login: id }, function (err, user) {
+		
+		console.log('deserializeUser', id);
+		
+		if (err) {
+			console.error(
+				'User model findOne error by "'+ id +'"',
+				err.stack || err
+			);
+			done(err);
+			return;
+		}
+		
+		done(null, user);
 	});
 });
 
@@ -101,11 +111,11 @@ var Social = {
 	
 	
 	// Здесь все просто =)
-	logout : function(req, res) {
+	logout: function(req, res) {
+		
 		req.logout();
 		delete req.session.userId;
-		
-		res.redirect('/');
+		res.status(200).json({ status: 'success' });
 	},
 	
 	

@@ -2,11 +2,13 @@
 	$
 	M
 	B
+	Wreqr
 	tpl
 ) <- define <[
 	jquery
 	marionette
 	backbone
+	backbone.wreqr
 	tpl!signin
 ]>
 
@@ -67,8 +69,16 @@ class SignInView extends M.LayoutView
 		@ajax
 			.then (data, status, jq-xhr)!~>
 				return unless @ajax?
-				window.alert 'FUCK YeAH'
-				@ajax-free!
+				Wreqr.radio.reqres.request \global, \auth-model .fetch do
+					success: !~>
+						if it.get camelize \is-auth
+							delete @ajax
+							B.history.navigate '', trigger: on, replace: yes
+						else
+							window.alert 'Произошла ошибка авторизации'
+							@ajax-free!
+							@ui.iemail.focus!
+					error: !-> throw new Error 'Cannot fetch AuthModel'
 			.fail (jq-xhr)!~>
 				return unless @ajax?
 				if jq-xhr.status is 406
