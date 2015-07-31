@@ -6,6 +6,7 @@
 	HeaderView
 	HeaderMenuListView
 	HeaderMenuCollection
+	Router
 ) <- define <[
 	marionette
 	backbone
@@ -14,6 +15,7 @@
 	views/header
 	views/header/menu/list
 	collections/header/menu
+	controllers/router
 ]>
 
 class Application extends M.Application
@@ -40,4 +42,5 @@ class Application extends M.Application
 		@root-view.get-region \header .show @header
 		@header.get-region \menu .show @header-menu
 		
+		@router = new Router!
 		B.history.start!
