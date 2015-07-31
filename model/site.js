@@ -1,18 +1,43 @@
 var mongoose = require('mongoose');
 
-var UserSchema = mongoose.Schema({
+var SiteSchema = mongoose.Schema({
 	url: {
 		type     : String,
+		unique   : true,
+		index    : true,
 		required : true
 	},
 	userId: {
-		type: mongoose.Types.ObjectId,
+		type: mongoose.Schema.Types.ObjectId,
 		required: true
 	},
 	isAPI: {
 		type: Boolean,
 		default: false
+	},
+	ucozApi: {
+		consumer_key: {
+			type: String,
+			required: true
+		},
+		consumer_secret: {
+			type: String,
+			required: true
+		},
+		oauth_token: {
+			type: String,
+			required: true
+		},
+		oauth_token_secret: {
+			type: String,
+			required: true
+		}
 	}
+},{
+	autoIndex: true
 });
 
-module.exports = mongoose.model('User', UserSchema);
+
+//SiteSchema.statics.getSites
+
+module.exports = mongoose.model('Site', SiteSchema);

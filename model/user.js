@@ -1,6 +1,7 @@
 var cfg      = require('../config.json');
 var mongoose = require('mongoose');
 var bcrypt   = require('bcrypt');
+var _ = require('lodash');
 
 var UserSchema = mongoose.Schema({
 	login: {
@@ -58,5 +59,14 @@ UserSchema.methods.comparePassword = function (candidatePassword, cb) {
 		cb(null, isMatch);
 	});
 };
+
+
+UserSchema.methods.getSites = function(query, cb) {
+	var _query = _.extend({}, query);
+	_query['userId'] = this._id;
+	
+	U.model.site.find(_query).exec(cb);
+};
+
 
 module.exports = mongoose.model('User', UserSchema);

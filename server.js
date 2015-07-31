@@ -14,8 +14,10 @@ var routesSocial = require('./routes/social');
 
 GLOBAL.U = {
 	db    : require('./model/db')(cfg.db),
+	async : require('async'),
 	model : {
-		user : require('./model/user')
+		user : require('./model/user'),
+		site : require('./model/site')
 	},
 	lib   : require('./lib')
 };

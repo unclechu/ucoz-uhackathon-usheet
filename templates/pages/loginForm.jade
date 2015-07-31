@@ -1,0 +1,14 @@
+extends ../layout
+
+block content
+	h1= title
+	form(name="add-estimation", method="post" action="/login")
+		a(href="/login/ucoz") a link
+		div.input
+			span.label Eimal
+			input(type="email", name="email")
+		div.input
+			span.label Password
+			input(type="password", name="password")
+		div.actions
+			input(type="submit", value="login")
