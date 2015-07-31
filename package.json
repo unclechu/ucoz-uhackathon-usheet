@@ -4,9 +4,27 @@
   "description": "Let the battle begins!",
   "main": "app.js",
   "dependencies": {
+    "bower": "^1.4.1",
+    "browser-sync": "^2.8.1",
+    "colors": "^1.1.2",
     "express": "^4.13.1",
+    "gulp": "^3.9.0",
+    "gulp-bower": "0.0.10",
+    "gulp-livescript": "^2.4.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-stylus": "^2.0.6",
+    "gulp-uglify": "^1.2.0",
+    "gulp-util": "^3.0.6",
+    "gulp-watch": "^4.3.4",
     "jade": "^1.11.0",
-    "mongoose": "^4.1.0"
+    "livescript": "^1.4.0",
+    "mongoose": "^4.1.0",
+    "nib": "^1.1.0",
+    "rimraf": "^2.4.2",
+    "through2": "^2.0.0",
+    "vinyl-fs-fake": "^1.1.0",
+    "yargs": "^3.16.1"
   },
   "devDependencies": {},
   "scripts": {

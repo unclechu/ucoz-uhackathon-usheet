@@ -29,7 +29,7 @@ var
 	REVISION              = utils.REVISION,
 	del                   = utils.del;
 
-var cfg = require('config.json');
+var cfg = require('./config.json');
 
 // browser sync for front-end
 
