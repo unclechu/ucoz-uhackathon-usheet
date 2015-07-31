@@ -1,8 +1,10 @@
 'use strict';
 
-var passport       = require('passport');
-var LocalStrategy  = require('passport-local').Strategy;
-var request        = require('request');
+var cfg           = require('../config.json');
+var passport      = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var request       = require('request');
+
 
 passport.use(new LocalStrategy({
 	
@@ -47,6 +49,7 @@ passport.use(new LocalStrategy({
 	});
 }));
 
+
 passport.serializeUser(function (user, done) {
 	console.log('serializeUser', user._id);
 	done(null, user._id);
@@ -72,7 +75,9 @@ passport.deserializeUser(function (id, done) {
 	});
 });
 
+
 var Social = {
+	
 	authBridh: function(req, res, next) {
 		if (req.user) {
 			next();
@@ -89,13 +94,10 @@ var Social = {
 			request(
 				'http://ulogin.ru/token.php?token=' + token + '&host=' + ip,
 				function (error, response, body) {
-					var query = {},
-						next  = function() {
-						res.redirect('/');
-					};
 					
+					var query = {};
 					
-					if (error || response.statusCode != 200) {
+					if (error || response.statusCode !== 200) {
 						res.status(500).end('error');
 					} else {
 						try {
@@ -112,22 +114,24 @@ var Social = {
 							return res.status(500).end('error');
 						}
 						
-						U.model.user.findOne(query).exec(res.ok(function(user) {
+						U.model.user.findOne(query).exec(res.ok(function (user) {
+							
 							if (user) {
-								req.session.userId = user._id;
-								
-								return next();
-							} else {
-								new U.model.user({
-									login : data.email,
-									uid   : data.uid
-								})
-								.save(res.ok(function(user) {
-									req.session.userId = user._id;
-									
-									return next();
-								}))
+								req.session.userId   = user._id;
+								req.session.username = 'uid'+user.uid;
+								res.redirect('/');
+								return;
 							}
+							
+							new U.model.user({
+								login : data.email,
+								uid   : data.uid,
+							}).save(res.ok(function (user) {
+								
+								req.session.userId   = user._id;
+								req.session.username = 'uid'+user.uid;
+								res.redirect('/');
+							}));
 						}));
 					}
 				}
@@ -136,12 +140,18 @@ var Social = {
 			return res.status(500).end('error4');
 		}
 	},
-		
 	
-	registerForm : function(req, res) {
+	uloginWrap: function (req, res) {
+		var callbackUrl = encodeURIComponent(cfg.ulogin.callbackUrl);
+		res.render('pages/signin-ucoz-iframe', { callbackUrl: callbackUrl });
+	},
+	
+	// TODO remove
+	registerForm: function(req, res) {
 		res.render('pages/reg.jade');
 	},
 	
+	// TODO remove
 	loginForm: function(req, res) {
 		res.render('pages/loginForm.jade');
 	},
@@ -186,6 +196,7 @@ var Social = {
 		
 		req.logout();
 		delete req.session.userId;
+		delete req.session.username;
 		res.status(200).json({ status: 'success' });
 	},
 	
@@ -268,12 +279,6 @@ var Social = {
 		});//validate
 		
 	},//register
-	
-	mustAuthenticatedMw: function (req, res, next){
-		req.isAuthenticated()
-			? next()
-			: res.redirect('/');
-	}
 };
 
 

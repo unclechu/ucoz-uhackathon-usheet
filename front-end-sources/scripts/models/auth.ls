@@ -4,6 +4,7 @@ class AuthModel extends B.Model
 	
 	url: '/is_auth'
 	defaults:
+		id       : null
 		is-auth  : no
 		username : ''
 	

@@ -25,15 +25,24 @@ class SignInView extends M.LayoutView
 		\inputs    : 'input, button'
 		\iemail    : 'input[name=email]'
 		\ipassword : 'input[name=password]'
+		\ucozwrap  : \iframe.ucoz-auth-wrapper
 	
 	events:
 		'click @ui.ucoz'     : \ucoz-enter |> camelize
 		'click @ui.enter'    : \enter
 		'click @ui.register' : \register
 	
+	ucoz-wrap-url: \/signin-ucoz-iframe
 	ucoz-enter: (e)!->
 		e.prevent-default!
-		window.alert "Ещё не реализовано"
+		const $btn =
+			@ui.ucozwrap.contents!.find '#uLogin [data-uloginbutton=uid]'
+		if $btn.length > 0
+			@ajax-block!
+		$btn.trigger \click
+	
+	on-render: !->
+		@ui.ucozwrap.prop src: @ucoz-wrap-url
 	
 	destroy: !->
 		if @ajax?
