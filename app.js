@@ -26,6 +26,9 @@ app.set('view engine', 'jade');
 
 app.use(path.join('/', staticPath), express.static(staticPath));
 
+app.locals.isDebug  = cfg.isDebug ? true : false;
+app.locals.revision = revision;
+
 app.locals.staticFile = function (file) {
 	while (file.charAt(0) === '/') {
 		file = file.slice(1);

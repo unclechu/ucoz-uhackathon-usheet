@@ -1,5 +1,10 @@
 doctype html
-html(lang=ru)
+html(
+	lang            = 'ru'
+	data-is-debug   = "#{isDebug}"
+	data-revision   = "#{revision}"
+	data-static-dir = staticDir()
+)
 	head
 		meta(charset='utf-8')
 		title= uSheet
@@ -8,6 +13,17 @@ html(lang=ru)
 		meta(name='author' content='Dmitriy Berezhnov'   )
 		
 		link(href=staticFile('css/build/main.css') type='text/css' rel='stylesheet')
-		script(src=staticFile('js/build/main.js'))
+		if isDebug
+			script(src=staticFile("js/prelude.js"))
+			script(
+				src=staticFile("js/require.js")
+				data-main=staticFile("js/build/main.js")
+			)
+		else
+			script(src=staticFile("js/prelude-min.js"))
+			script(
+				src=staticFile("js/require.min.js")
+				data-main=staticFile("js/build/main.js")
+			)
 	body
 		block content
