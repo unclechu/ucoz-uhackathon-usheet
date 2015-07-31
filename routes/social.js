@@ -2,6 +2,7 @@
 
 var passport       = require('passport');
 var LocalStrategy  = require('passport-local').Strategy;
+var request        = require('request');
 
 passport.use(new LocalStrategy({
 	
@@ -79,6 +80,62 @@ var Social = {
 			res.status(403).end();
 		}
 	},
+	
+	uloginCallback: function(req, res) {
+		var token = req.body.token;
+		var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+		
+		if (token && ip) {
+			request(
+				'http://ulogin.ru/token.php?token=' + token + '&host=' + ip,
+				function (error, response, body) {
+					var query = {},
+						next  = function() {
+						res.redirect('/');
+					};
+					
+					
+					if (error || response.statusCode != 200) {
+						res.status(500).end('error');
+					} else {
+						try {
+							var data = JSON.parse(body);
+						} catch(e) {
+							return res.status(500).error(e);
+						}
+						
+						if (data.email) {
+							query['login'] = data.email;
+						} else if (response.uid) {
+							query['uid'] = data.uid;
+						} else {
+							return res.status(500).end('error');
+						}
+						
+						U.model.user.findOne(query).exec(res.ok(function(user) {
+							if (user) {
+								req.session.userId = user._id;
+								
+								return next();
+							} else {
+								new U.model.user({
+									login : data.email,
+									uid   : data.uid
+								})
+								.save(res.ok(function(user) {
+									req.session.userId = user._id;
+									
+									return next();
+								}))
+							}
+						}));
+					}
+				}
+			);
+		} else {
+			return res.status(500).end('error4');
+		}
+	},
 		
 	
 	registerForm : function(req, res) {
@@ -121,6 +178,7 @@ var Social = {
 			
 		})(req, res, next);
 	},
+	
 	
 	
 	// Здесь все просто =)

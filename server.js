@@ -70,7 +70,7 @@ app.use(function(req, res, next) {
 	res.ok = function(code){
 		return function(err,data){
 			if (err) {
-				req.prodlog('res.ok error ', err.stack || err);
+				console.error('ok error ', err.stack || err);
 				return res.error(err);
 			}
 			try{
@@ -80,6 +80,7 @@ app.use(function(req, res, next) {
 			}
 		};
 	};
+	Function.prototype.ok = res.ok;
 	
 	next();
 });
@@ -91,10 +92,6 @@ app.use(function(req, res, next) {
 	app.router(req, res, next);
 });
 routes(app);
-//app.get('/', function(req, res){
-//	res.send('hello world');
-//});
-
 
 // обработка ошибок на уровне express
 app.use(function(err, req, res, next) {

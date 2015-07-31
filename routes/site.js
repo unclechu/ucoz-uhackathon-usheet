@@ -9,22 +9,63 @@ var SiteRoute = {
 	},
 	
 	add: function(req, res) {
-		var site = new U.model.site({
-			url    : req.body.url,
-			userId : req.user._id
-		});
+		var data = req.body;
+		data.userId = req.user._id;
 		
-		// Проверка на включенность API
-		console.log('add site', site.toObject());
+		data.url = data.url.replace(/https?:\/\//, '');
 		
-		site.save(function(err) {
-			console.error(err);
-			
+		var site = new U.model.site(data);
+		site.validate(function(err) {
 			if (err) {
-				res.status(500).end('error');
-			} else {
-				res.json(site.toObject())
+				return res.status(500).json({error: err});
 			}
+			
+			// Проверка на включенность API
+			U.async.map(
+				[
+					{
+						url: 'blog'
+					},
+					{
+						url       :'search',
+						addParams : {
+							query: "123"
+						}
+					}
+				],
+				function(p, cb) {
+					try {
+						var params = _.extend({url: data.url}, site.ucozApi.toObject());
+						
+						var api = new U.lib.UCozApi(params);
+						
+						api.exec('/' + p.url, 'get', p.addParams, function(err, r) {
+							console.log('add site', err, r.error);
+							
+							if ( ! err && ! r.error) {
+								site.isAPI = true;
+							}
+							
+							cb();
+						});
+					} catch(e) {
+						cb(e);
+					}
+				},
+				res.ok(function() {
+					if (site.isAPI) {
+						site.save(function(err) {
+							if (err) {
+								res.status(500).json(err);
+							} else {
+								res.json(site.toObject())
+							}
+						})
+					} else {
+						return res.status(500).json({error: {msg: "api should be turn off"}})
+					}
+				})
+			);
 		})
 	},
 	
@@ -45,14 +86,14 @@ var SiteRoute = {
 		var scope = {},
 			query = req.body.query;
 		
-		if ( ! query || query.length < 5) {
+		if ( ! query || query.length < 2) {
 			return res.status(500).json({error: "query very small"});
 		}
 		
-		U.async.serial(
+		U.async.series(
 			[
 				function(cb) {
-					req.user.getSites({isAPI: true}, res.ok(function(sites) {
+					req.user.getSites({isAPI: true}, cb.ok(function(sites) {
 						scope.sites = sites;
 						
 						cb();
@@ -65,13 +106,14 @@ var SiteRoute = {
 					U.async.map(
 						scope.sites,
 						function(site, cb) {
-							var params = _.extend({}, site.ucozApi);
-							params.query = query;
+							var params = _.extend({url   : site.url}, site.ucozApi.toObject());
 							
 							var api = new U.lib.UCozApi(params);
 							
-							api.exec(cb.ok(function(r) {
-								results[site._id] = r;
+							api.exec('/search', 'get', {query : query}, cb.ok(function(r) {
+								if ( ! r.error) {
+									results[site._id] = r;
+								}
 								
 								cb();
 							}));

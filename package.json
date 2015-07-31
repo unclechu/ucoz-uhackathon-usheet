@@ -4,8 +4,8 @@
   "description": "Let the battle begins!",
   "main": "app.js",
   "dependencies": {
-    "bcrypt": "^0.8.4",
     "async": "^1.4.0",
+    "bcrypt": "^0.8.4",
     "bootstrap-styl": "^4.0.5",
     "bower": "^1.4.1",
     "browser-sync": "^2.8.1",
@@ -38,6 +38,7 @@
     "passport-local": "^1.0.0",
     "passport-oauth": "^1.0.0",
     "passport-oauth2-refresh": "^0.3.1",
+    "request": "^2.60.0",
     "requirejs": "^2.1.20",
     "rimraf": "^2.4.2",
     "through2": "^2.0.0",
