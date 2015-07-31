@@ -1,9 +1,11 @@
+'use strict';
+
 var Route = {
 	
 	isAuth: function(req, res) {
 		res.json({
 			isAuth: !!req.session.userId
-		})
+		});
 	},
 	
 	index: function(req, res) {

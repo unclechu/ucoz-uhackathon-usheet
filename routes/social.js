@@ -4,19 +4,45 @@ var passport       = require('passport');
 var LocalStrategy  = require('passport-local').Strategy;
 
 passport.use(new LocalStrategy({
+	
 	usernameField: 'email',
-	passwordField: 'password'
-}, function(username, password,done){
-	U.model.user.findOne({ login : username},function(err,user){
-		console.log('init', username, password, err,user);
+	passwordField: 'password',
+	
+}, function (username, password, done) {
+	
+	U.model.user.findOne({ login : username }, function (err, user) {
 		
-		return err
-			? done(err)
-			: user
-			? password === user.password
-			? done(null, user)
-			: done(null, false, { message: 'Incorrect password.' })
-			: done(null, false, { message: 'Incorrect username.' });
+		if (err) {
+			console.error(
+				"user model findOne error for username '"+ username +"'",
+				err.stack || err
+			);
+			done(err);
+			return;
+		}
+		
+		if ( ! user) {
+			done(null, false, { message: 'Incorrect username' });
+			return;
+		}
+		
+		user.comparePassword(password, function (err, isMatch) {
+			
+			if (err) {
+				console.error(
+					"Compare password error for user '"+ username +"'.",
+					err.stack || err
+				);
+				done(err);
+				return;
+			}
+			
+			if (isMatch) {
+				done(null, user.toJSON());
+			} else {
+				done(null, false, { message: 'Incorrect password' });
+			}
+		});
 	});
 }));
 
@@ -36,29 +62,41 @@ passport.deserializeUser(function(id, done) {
 });
 
 var Social = {
+	
 	registerForm : function(req, res) {
 		res.render('pages/reg.jade');
 	},
 	
 	
-	login : function(req, res, next) {
-		passport.authenticate('local',
-			function(err, user, info) {
-				console.log(err, user, info);
-				
-				req.session.userId = user._id;
-				
-				return err
-					? next(err)
-					: user
-					? req.logIn(user, function(err) {
-					return err
-						? next(err)
-						: res.redirect('/');
-				})
-					: res.redirect('/');
+	login: function(req, res, next) {
+		
+		passport.authenticate('local', function (err, user, info) {
+			
+			if (err) {
+				console.error('Passport auth error', err.stack || err);
+				next(err);
+				return;
 			}
-		)(req, res, next);
+			
+			if ( ! user) {
+				// incorrect login or password
+				res.status(406).json(info);
+				return;
+			}
+			
+			req.session.userId = user._id;
+			req.logIn(user, function (err) {
+				
+				if (err) {
+					console.error('req.logIn error', err.stack || err);
+					next(err);
+					return;
+				}
+				
+				res.status(200).json({ status: 'success' });
+			});
+			
+		})(req, res, next);
 	},
 	
 	
@@ -71,20 +109,40 @@ var Social = {
 	},
 	
 	
-	// Регистрация пользователя. Создаем его в базе данных, и тут же, после сохранения, вызываем метод `req.logIn`, авторизуя пользователя
+	/**
+	 * Регистрация пользователя.
+	 * Создаем его в базе данных, и тут же, после сохранения,
+	 * вызываем метод `req.logIn`, авторизуя пользователя.
+	 */
 	register: function(req, res, next) {
-		var user = new U.model.user({ 
-			login    : req.body.email, 
+		
+		console.info("Registering new user '"+ req.body.email +"'...");
+		
+		var user = new U.model.user({
+			login    : req.body.email,
 			password : req.body.password
 		});
+		
 		user.save(function(err) {
 			return err
 				? next(err)
 				: req.logIn(user, function(err) {
-				return err
-					? next(err)
-					: res.redirect('/');
-			});
+					
+					if (err) {
+						console.error(
+							"Registering new user '"
+							+ req.body.email +"' error."
+						);
+					} else {
+						console.info(
+							"New user '"
+							+ req.body.email
+							+"' sucessfully registered."
+						);
+					}
+					
+					return err ? next(err) : res.status(200).end();
+				});
 		});
 	},
 	

@@ -4,6 +4,7 @@
   "description": "Let the battle begins!",
   "main": "app.js",
   "dependencies": {
+    "bcrypt": "^0.8.4",
     "bootstrap-styl": "^4.0.5",
     "bower": "^1.4.1",
     "browser-sync": "^2.8.1",

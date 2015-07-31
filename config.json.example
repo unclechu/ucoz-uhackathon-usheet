@@ -10,5 +10,8 @@
     "secret": "secretsalt",
     "duration": 86400000,
     "activeDuration": 300000
+  },
+  "bcrypt": {
+    "salt": "secretsalt"
   }
 }
