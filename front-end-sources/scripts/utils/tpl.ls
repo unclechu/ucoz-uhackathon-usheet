@@ -3,9 +3,13 @@
 cfg = Wreqr.radio.reqres.request \global, \config
 dir = cfg.static-dir
 
+traits = {} <<< cfg
+
 load = !(name, req, on-load, config)->
-	path = "#{dir}/templates/#{name}.jade"
+	const path = "#{dir}/templates/#{name}.jade"
 	text <-! req ["text!#{path}"]
-	on-load jade.compile text
+	const compiled-tpl = jade.compile text
+	data <- on-load
+	{} <<< traits <<< data |> compiled-tpl
 
 {load}
