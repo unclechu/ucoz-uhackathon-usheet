@@ -9,6 +9,7 @@
     "browser-sync": "^2.8.1",
     "colors": "^1.1.2",
     "express": "^4.13.1",
+    "express-domain-middleware": "~0.1.0",
     "gulp": "^3.9.0",
     "gulp-bower": "0.0.10",
     "gulp-livescript": "^2.4.0",
