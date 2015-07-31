@@ -4,7 +4,8 @@ var Route = {
 	
 	isAuth: function(req, res) {
 		res.json({
-			isAuth: !!req.session.userId
+			isAuth: !!req.session.userId,
+			username: req.session.username,
 		});
 	},
 	

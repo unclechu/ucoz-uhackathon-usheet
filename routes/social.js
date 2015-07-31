@@ -94,7 +94,8 @@ var Social = {
 				return;
 			}
 			
-			req.session.userId = user._id;
+			req.session.userId   = user._id;
+			req.session.username = user.login;
 			req.logIn(user, function (err) {
 				
 				if (err) {
@@ -170,7 +171,8 @@ var Social = {
 					return;
 				}
 				
-				req.session.userId = userSaved._id;
+				req.session.userId   = userSaved._id;
+				req.session.username = userSaved.login;
 				req.logIn(userSaved, function(err) {
 					
 					if (err) {
