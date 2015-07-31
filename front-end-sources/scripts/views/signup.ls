@@ -2,22 +2,23 @@
 	$
 	M
 	B
+	Wreqr
 	tpl
 ) <- define <[
 	jquery
 	marionette
 	backbone
-	tpl!signin
+	backbone.wreqr
+	tpl!signup
 ]>
 
 {camelize, empty} = require \prelude-ls
 
-class SignInView extends M.LayoutView
-	class-name: 'container signin-view'
+class SignUpView extends M.LayoutView
+	class-name: 'container signup-view'
 	template: tpl
 	
 	ui:
-		\ucoz      : \.ucoz-enter
 		\enter     : \.enter
 		\register  : \.register
 		\inputs    : 'input, button'
@@ -25,13 +26,8 @@ class SignInView extends M.LayoutView
 		\ipassword : 'input[name=password]'
 	
 	events:
-		'click @ui.ucoz'     : \ucoz-enter |> camelize
-		'click @ui.enter'    : \enter
 		'click @ui.register' : \register
-	
-	ucoz-enter: (e)!->
-		e.prevent-default!
-		window.alert "Ещё не реализовано"
+		'click @ui.enter'    : \enter
 	
 	destroy: !->
 		if @ajax?
@@ -45,7 +41,7 @@ class SignInView extends M.LayoutView
 		@ui.inputs.prop \disabled false
 		delete @ajax
 	
-	enter: (e)!->
+	register: (e)!->
 		
 		e.prevent-default!
 		return if @ajax?
@@ -60,25 +56,40 @@ class SignInView extends M.LayoutView
 				@ui.ipassword.focus!
 			return
 		
+		if @ui.iemail.val! isnt /^.+@.+$/
+			window.alert 'Некорректно заполнено поле E-Mail'
+			@ajax-free!
+			@ui.iemail.focus!
+			return
+		
 		@ajax =
-			$.post \/login, $.param do
+			$.post \/register, $.param do
 				email    : @ui.iemail.val!
 				password : @ui.ipassword.val!
 		@ajax
 			.then (data, status, jq-xhr)!~>
 				return unless @ajax?
-				window.alert 'FUCK YeAH'
-				@ajax-free!
+				Wreqr.radio.reqres.request \global, \auth-model .fetch do
+					success: !~>
+						if it.get camelize \is-auth
+							delete @ajax
+							B.history.navigate '', trigger: on, replace: yes
+						else
+							window.alert 'Произошла ошибка авторизации'
+							@ajax-free!
+							@ui.iemail.focus!
+					error:   !-> throw new Error 'Cannot fetch AuthModel'
 			.fail (jq-xhr)!~>
 				return unless @ajax?
 				if jq-xhr.status is 406
-					window.alert 'Неверный логин/пароль'
+					@ui.ipassword.val ''
+					window.alert \
+						'Пользователь с таким E-Mail-ом уже зарегистрирован'
 				else
 					window.alert 'Произошла ошибка обращения к серверу'
-				@ui.ipassword.val ''
 				@ajax-free!
 				@ui.iemail.focus!
 	
-	register: (e)!->
+	enter: (e)!->
 		e.prevent-default!
-		B.history.navigate \sign-up, trigger: on
+		B.history.navigate \sign-in, trigger: on

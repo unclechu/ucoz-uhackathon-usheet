@@ -1,0 +1,22 @@
+.row.clearfix
+	.col-md-4.column
+	.col-md-4.column
+		.panel.panel-info
+			.panel-heading Регистрация
+			.panel-body
+				form.login-password-auth
+					.message
+					.form-group
+						label
+							span E-Mail
+							=' '
+							input.form-control(type='text' name='email' required)
+					.form-group
+						label
+							span Пароль
+							=' '
+							input.form-control(type='password' name='password' required)
+					button.register.btn.btn-primary Зарегистрироваться
+					=' '
+					button.enter.btn.btn-warning К форме входа
+	.col-md-4.column

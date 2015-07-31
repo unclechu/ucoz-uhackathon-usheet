@@ -120,31 +120,72 @@ var Social = {
 		
 		var user = new U.model.user({
 			login    : req.body.email,
-			password : req.body.password
+			password : req.body.password,
 		});
 		
-		user.save(function(err) {
-			return err
-				? next(err)
-				: req.logIn(user, function(err) {
+		user.validate(function (err) {
+			
+			if (err) {
+				console.error(
+					"Saving user model validate error for username '"
+					+ req.body.email +"'",
+					err.stack || err
+				);
+				next(err);
+				return;
+			}
+			
+			user.save(function(err, userSaved) {
+				
+				if (err) {
+					
+					// duplicate
+					if (err.code === 11000) {
+						console.error(
+							"Cannot register username '"+ req.body.email +"'"
+							+", because this username already taken."
+						);
+						res.status(406).json({
+							message: 'Username already taken'
+						});
+						return;
+					}
+					
+					console.error(
+						"Saving user model error for username '"
+						+ req.body.email +"'",
+						err.stack || err
+					);
+					next(err);
+					return;
+				}
+				
+				req.session.userId = userSaved._id;
+				req.logIn(userSaved, function(err) {
 					
 					if (err) {
 						console.error(
 							"Registering new user '"
 							+ req.body.email +"' error."
 						);
-					} else {
-						console.info(
-							"New user '"
-							+ req.body.email
-							+"' sucessfully registered."
-						);
+						next(err);
+						return;
 					}
 					
-					return err ? next(err) : res.status(200).end();
-				});
-		});
-	},
+					console.info(
+						"New user '"
+						+ req.body.email
+						+"' sucessfully registered."
+					);
+					res.status(200).json({ status: 'success' });
+					
+				});//logIn
+				
+			});//save
+			
+		});//validate
+		
+	},//register
 	
 	mustAuthenticatedMw: function (req, res, next){
 		req.isAuthenticated()

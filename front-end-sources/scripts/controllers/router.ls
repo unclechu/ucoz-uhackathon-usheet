@@ -3,11 +3,13 @@
 	B
 	Wreqr
 	SignInView
+	SignUpView
 ) <- define <[
 	marionette
 	backbone
 	backbone.wreqr
 	views/signin
+	views/signup
 ]>
 
 {camelize, Obj, all} = require \prelude-ls
@@ -19,6 +21,7 @@ class Router extends M.AppRouter
 			''          : 'main-route'
 			
 			'sign-in'   : 'sign-in'
+			'sign-up'   : 'sign-up'
 			'logout'    : 'logout'
 			'sites'     : 'sites'
 			'materials' : 'materials'
@@ -46,19 +49,28 @@ class Router extends M.AppRouter
 	
 	main-route: !->
 		console.info 'Main route'
-		if @auth-model.get (camelize \is-auth)
+		if @auth-model.get camelize \is-auth
 			B.history.navigate \sites,   trigger: on, replace: yes
 		else
 			B.history.navigate \sign-in, trigger: on, replace: yes
 	
 	not-found: !->
 		console.info 'Not found route'
+		window.alert 'Страница не найдена'
+		B.history.navigate '', trigger: on, replace: yes
 	
 	sign-in: !->
 		
 		console.info 'Sign in route'
 		
 		view = new SignInView!
+		@get-option (camelize \target-region) .show view
+	
+	sign-up: !->
+		
+		console.info 'Sign up route'
+		
+		view = new SignUpView!
 		@get-option (camelize \target-region) .show view
 	
 	logout: !->

@@ -1,4 +1,3 @@
-var cfg      = require('../config.json');
 var mongoose = require('mongoose');
 var bcrypt   = require('bcrypt');
 
@@ -25,7 +24,7 @@ UserSchema.pre('save', function (next) {
 		return;
 	}
 	
-	bcrypt.genSalt(cfg.bcrypt.salt, function (err, salt) {
+	bcrypt.genSalt(function (err, salt) {
 		
 		if (err) {
 			next(err);
