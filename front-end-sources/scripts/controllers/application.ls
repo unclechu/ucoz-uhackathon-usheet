@@ -46,4 +46,8 @@ class Application extends M.Application
 		@header.get-region \menu .show @header-menu
 		
 		@router = new Router target-region: @root-view.get-region \body
+		@router.on \route, @on-route, this
 		B.history.start!
+	
+	on-route: !->
+		@header-menu-collection.trigger \route
