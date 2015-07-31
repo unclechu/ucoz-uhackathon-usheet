@@ -1,0 +1,9 @@
+extends ../layout
+block content
+	h1= title
+	form(name="add-estimation", method="post" action="/site/add")
+		div.input
+			span.label Site url
+			input(type="text", name="url")
+		div.actions
+			input(type="submit", value="add")

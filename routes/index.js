@@ -1,6 +1,17 @@
 'use strict';
 
 var Route = {
+	userBridg: function(req, res, next) {
+		U.model.user.findOne({_id: req.session.userId}, function(err, user) {
+			if (user) {
+				req.user = user;
+			}
+			
+			console.log('req.user', req.session.userId, err, user);
+			
+			next();
+		})
+	},
 	
 	isAuth: function(req, res) {
 		res.json({
@@ -9,7 +20,7 @@ var Route = {
 	},
 	
 	index: function(req, res) {
-		console.log('req.user', req.session.userId);
+		
 		
 		res.render('pages/main.jade');
 	},
