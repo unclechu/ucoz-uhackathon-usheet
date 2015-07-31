@@ -9,10 +9,11 @@ var jade = require('jade');
 var routes = require('./routes');
 
 GLOBAL.U = {
-	db   : require('./model/db')(cfg.db),
-	model: {
+	db    : require('./model/db')(cfg.db),
+	model : {
 		user : require('./model/user')
-	}
+	},
+	lib   : require('./lib')
 };
 
 var staticPath = 'public';
@@ -43,19 +44,27 @@ app.locals.staticDir = function (dir) {
 	return path.join('/', staticPath, dir);
 };
 
+app.get('/', routes.index);
+app.get('/user/create', routes.createUser);
+app.get('/test2', function (req, res) {
+	setTimeout(function() {
+		throw new Error('1234');
+		res.send('test');
+	}, 1000);
+});
+
+// Если не смогли никак обработать
+app.get('*', function(req, res){
+	res.status(404).send('Sorry, we cannot find that!');
+});
+
 // обработка ошибок на уровне express
 app.use(function(err, req, res, next) {
 	if (res.error) {
 		res.error(err);
 	} else {
-		console.log(err);
+		res.status(500).send('Sorry, something wrong!');
 	}
-});
-
-app.get('/', routes.index);
-app.get('/test', function (req, res) {
-	console.log('test');
-	res.end('test');
 });
 
 
