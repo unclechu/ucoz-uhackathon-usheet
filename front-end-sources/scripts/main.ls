@@ -79,4 +79,10 @@ Wreqr.radio.channel \global .reqres.set-handler \config -> cfg
 
 ($, app) <-! requirejs <[ jquery app ]>
 <-! $ # dom ready
-app.initialize container: $ \#app
+
+$container = $ \#app
+if $container.length isnt 1
+	console.error '#app container not found, cannot start application.'
+	return
+
+app.initialize container: $container
