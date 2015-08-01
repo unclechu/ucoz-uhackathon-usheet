@@ -141,8 +141,9 @@ var SiteRoute = {
 									
 									r.results.forEach(function(result) {
 										scope.results.push({
-											url         : site.url,
+											siteUrl     : site.url,
 											title       : result.title,
+											url         : result.url,
 											description : result.description,
 											message     : result.message
 										});
