@@ -198,9 +198,10 @@ var SiteRoute = {
 									
 									r.blogs.forEach(function(blog) {
 										scope.results.push({
-											url     : site.url,
+											siteUrl : site.url,
 											title   : blog.title,
-											message : blog.message,
+											url     : blog.entry_url,
+											message : blog.message
 										});
 									});
 									
@@ -308,72 +309,6 @@ var SiteRoute = {
 	
 	
 	publishPage: function(req, res) {
-		var scope = {};
-		var data = req.body;
-		
-		if ( ! data.title) {
-			return res.status(500).json({error: "title in empty"});
-		}
-		
-		if ( ! data.description) {
-			return res.status(500).json({error: "description in empty"});
-		}
-		
-		if ( ! data.message) {
-			return res.status(500).json({error: "message in empty"});
-		}
-		
-		U.async.series(
-			[
-				function(cb) {
-					req.user.getSites({isAPI: true}, cb.ok(function(sites) {
-						scope.sites = sites;
-						
-						cb()
-					}));
-				},
-				
-				function(cb) {
-					U.async.map(
-						scope.sites,
-						function(site, cb) {
-							var params = _.extend({url: site.url}, site.ucozApi.toObject());
-							params.url = site.url;
-							var api = new U.lib.UCozApi(params);
-							
-							api.exec(
-								'/publ',
-								'post',
-								{
-									'title'       : data.title,
-									'description' : data.description,
-									'message'     : data.message
-								},
-								function(err, r) {
-									if (err) return cb(err);
-									
-									scope.results[site._id] = r;
-									
-									cb();
-								}
-							);
-						},
-						cb
-					);
-				}
-			],
-			function(err){
-				if (err) return res.json({error: err});
-				
-				console.log('scope.results', scope.results);
-				
-				res.json(scope.results);
-			}
-		)
-	},
-	
-	
-	publishBlog: function(req, res) {
 		var scope = {
 			sites   : [],
 			results : {}
@@ -413,6 +348,106 @@ var SiteRoute = {
 							var api = new U.lib.UCozApi(params);
 							
 							api.exec(
+								'/publ',
+								'post',
+								{
+									'title'       : data.title,
+									'description' : data.description,
+									'message'     : data.message
+								},
+								function(err, r) {
+									console.log('publ', site.url, err, r);
+									
+									if (err) return cb(err);
+									
+									scope.results[site._id] = r;
+									
+									cb();
+								}
+							);
+						},
+						cb
+					);
+				}
+			],
+			res.ok(function(){
+				var m = new U.model.material({
+					'modulaName'     : 'publ',
+					'title'          : data.title,
+					'description'    : data.description,
+					'message'        : data.message,
+					'publishedSites' : Object.keys(scope.results).map(function(siteId) {
+						return {
+							id     : scope.results[siteId].id,
+							siteId : scope.results[siteId].siteId
+						};
+					})
+				});
+				
+				m.save(function(err) {
+					if (err) {
+						res.status(500).json({error: {msg: err}})
+					} else {
+						res.json(scope.results);
+					}
+				});
+			})
+		)
+	},
+	
+	
+	getPublishedBlog: function(req, res) {
+		console.log('here', U.model.material);
+		U.model.material.find({modulaName: 'blog'}).exec(res.ok(function(materials) {
+			res.json(
+				materials.map(function(material) {
+					return _.pick(material, ['title', 'message', 'description']);
+				})
+			)
+		}));
+	},
+	
+	
+	publishBlog: function(req, res) {
+		var scope = {
+			sites   : [],
+			results : {}
+		};
+		var data = req.body;
+		
+		if ( ! data.title) {
+			return res.status(500).json({error: "title in empty"});
+		}
+		
+		if ( ! data.description) {
+			return res.status(500).json({error: "description in empty"});
+		}
+		
+		if ( ! data.message) {
+			return res.status(500).json({error: "message in empty"});
+		}
+		
+		U.async.series(
+			[
+				function(cb) {
+					req.user.getSites({isAPI: true},function(err, sites) {
+						if (err) return cb(err);
+						
+						scope.sites = sites;
+						console.log('scope.sites len', scope.sites.length);
+						cb()
+					});
+				},
+				
+				function(cb) {
+					U.async.map(
+						scope.sites,
+						function(site, cb) {
+							var params = _.extend({url: site.url}, site.ucozApi.toObject());
+							
+							var api = new U.lib.UCozApi(params);
+							
+							api.exec(
 								'/blog',
 								'post',
 								{
@@ -437,6 +472,7 @@ var SiteRoute = {
 			],
 			res.ok(function(){
 				var m = new U.model.material({
+					'modulaName'     : 'blog',
 					'title'          : data.title,
 					'description'    : data.description,
 					'message'        : data.message,

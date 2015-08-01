@@ -41,6 +41,7 @@ module.exports = function (app) {
 				});
 				
 				$.bridge('/publish', function($) {
+					$.get('/blog').to(site.getPublishedBlog);
 					$.post('/blog').to(site.publishBlog);
 					$.post('/page').to(site.publishPage);
 					
