@@ -1,28 +1,26 @@
 .row.clearfix
 	.col-md-4.column
 	.col-md-4.column
-		.panel.panel-primary
+		form.ucoz-auth.panel.panel-primary
 			.panel-heading Вход через uCoz
 			.panel-body
-				form.ucoz-auth
-					button.ucoz-enter.btn.btn-success Войти через uCoz
-					iframe.ucoz-auth-wrapper
-		.panel.panel-info
+				button.ucoz-enter.btn.btn-success Войти через uCoz
+				iframe.ucoz-auth-wrapper
+		form.login-password-auth.panel.panel-info
 			.panel-heading Вход по логину и паролю
 			.panel-body
-				form.login-password-auth
-					.message
-					.form-group
-						label
-							span E-Mail
-							=' '
-							input.form-control(type='text' name='email' required)
-					.form-group
-						label
-							span Пароль
-							=' '
-							input.form-control(type='password' name='password' required)
+				.form-group
+					label
+						span E-Mail
+						=' '
+						input.form-control(type='text' name='email' required)
+				.form-group
+					label
+						span Пароль
+						=' '
+						input.form-control(type='password' name='password' required)
+			.panel-footer
+				.btn-group
 					button.enter.btn.btn-primary Войти
-					=' '
 					button.register.btn.btn-warning Регистрация
 	.col-md-4.column

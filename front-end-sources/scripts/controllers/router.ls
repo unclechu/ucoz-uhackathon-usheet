@@ -7,6 +7,7 @@
 	SignUpView
 	WaitView
 	SitesListView
+	AddSiteView
 ) <- define <[
 	jquery
 	marionette
@@ -16,6 +17,7 @@
 	views/signup
 	views/wait
 	views/sites/list
+	views/sites/add
 ]>
 
 {camelize, Obj, and-list} = require \prelude-ls
@@ -30,15 +32,26 @@ class Router extends M.AppRouter
 			'sign-in'   : 'sign-in'
 			'sign-up'   : 'sign-up'
 			'logout'    : 'logout'
+			
 			'sites'     : 'sites'
+			'sites/add' : 'add-site'
+			
 			'materials' : 'materials'
 			
 			'*defaults' : 'not-found'
 			
 		|> Obj.map (-> it |> camelize)
 	
-	routes-required-auth: <[ sites materials logout search ]>
-	routes-prevent-auth:  <[ sign-in sign-out ]>
+	routes-required-auth: <[
+		sites
+		materials
+		logout
+		search
+	]>
+	routes-prevent-auth: <[
+		sign-in
+		sign-out
+	]>
 	
 	initialize: !(opts)->
 		super ...
@@ -54,7 +67,7 @@ class Router extends M.AppRouter
 		
 		[
 			@auth-model.get camelize \is-auth |> (not)
-			B.history.fragment |> (in routes-required-auth)
+			B.history.fragment |> (.split \/) |> (.0) |> (in routes-required-auth)
 		] |> and-list |> !->
 			return unless it
 			console.warn 'Lost authorization, redirecting to sign-in form'
@@ -62,7 +75,7 @@ class Router extends M.AppRouter
 		
 		[
 			@auth-model.get camelize \is-auth
-			B.history.fragment |> (in routes-prevent-auth)
+			B.history.fragment |> (.split \/) |> (.0) |> (in routes-prevent-auth)
 		] |> and-list |> !->
 			return unless it
 			console.warn 'Leave auth forms because we already authorized'
@@ -81,6 +94,7 @@ class Router extends M.AppRouter
 		console.info 'Not found route'
 		window.alert 'Страница не найдена'
 		B.history.navigate '', trigger: on, replace: yes
+	
 	
 	sign-in: !->
 		
@@ -123,13 +137,25 @@ class Router extends M.AppRouter
 				window.alert 'Произошла ошибка разлогивания'
 				B.history.navigate '', trigger: on, replace: yes
 	
+	
 	sites: !->
 		console.info 'Sites route'
 		view = new SitesListView!
 		@get-option (camelize \target-region) .show view
 	
+	add-site: !->
+		console.info 'Add site route'
+		view = new AddSiteView!
+		@get-option (camelize \target-region) .show view
+	
+	
 	materials: !->
 		console.info 'Materials route'
+		view = new WaitView!
+		@get-option (camelize \target-region) .show view
+	
 	
 	search: !->
 		console.info 'Search route'
+		view = new WaitView!
+		@get-option (camelize \target-region) .show view

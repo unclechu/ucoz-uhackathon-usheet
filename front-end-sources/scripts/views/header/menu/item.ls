@@ -21,7 +21,7 @@ class HeaderMenuItemView extends M.ItemView
 		@template = let t = @template
 			(data)~> {} <<< @auth-model.toJSON! <<< data |> t
 	on-route: !->
-		if (@model.get \link .slice 1) is B.history.fragment
+		if (@model.get \link .slice 1) is (B.history.fragment.split \/ .0)
 			@$el.add-class \active
 		else
 			@$el.remove-class \active
