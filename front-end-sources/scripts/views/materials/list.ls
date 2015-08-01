@@ -32,9 +32,9 @@ class MaterialsListView extends M.CompositeView
 	
 	events:
 		do
-			'click @ui.add': 'add-site'
+			'click @ui.add': 'add-material'
 		|> Obj.map (-> it |> camelize)
 	
-	add-site: (e)!->
+	add-material: (e)!->
 		e.prevent-default!
 		B.history.navigate \materials/add, trigger: on

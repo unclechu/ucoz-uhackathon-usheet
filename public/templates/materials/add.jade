@@ -1,0 +1,17 @@
+form.add-material.panel.panel-success
+	.panel-heading Привязка нового сайта
+	.panel-body
+		.form-group
+			label
+				span Заголовок
+				=' '
+				input.form-control(type='text' name='title' value='' required)
+		.form-group
+			label
+				span Контент
+				=' '
+				textarea.form-control(name='message' required)
+	.panel-footer
+		.btn-group
+			button.add-material.btn.btn-primary Добавить материал
+			button.back-to-list.btn.btn-warning Вернуться к списку материалов

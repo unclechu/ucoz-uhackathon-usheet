@@ -10,6 +10,7 @@
 	AddSiteView
 	SearchListView
 	MaterialsListView
+	AddMaterialView
 ) <- define <[
 	jquery
 	marionette
@@ -22,6 +23,7 @@
 	views/sites/add
 	views/search/list
 	views/materials/list
+	views/materials/add
 ]>
 
 {camelize, Obj, and-list} = require \prelude-ls
@@ -30,19 +32,20 @@ class Router extends M.AppRouter
 	
 	routes:
 		do
-			''          : 'main-route'
+			''              : 'main-route'
 			
-			'search'    : 'search'
-			'sign-in'   : 'sign-in'
-			'sign-up'   : 'sign-up'
-			'logout'    : 'logout'
+			'search'        : 'search'
+			'sign-in'       : 'sign-in'
+			'sign-up'       : 'sign-up'
+			'logout'        : 'logout'
 			
-			'sites'     : 'sites'
-			'sites/add' : 'add-site'
+			'sites'         : 'sites'
+			'sites/add'     : 'add-site'
 			
-			'materials' : 'materials'
+			'materials'     : 'materials'
+			'materials/add' : 'add-material'
 			
-			'*defaults' : 'not-found'
+			'*defaults'     : 'not-found'
 			
 		|> Obj.map (-> it |> camelize)
 	
@@ -158,6 +161,11 @@ class Router extends M.AppRouter
 	materials: !->
 		console.info 'Materials route'
 		view = new MaterialsListView!
+		@get-option (camelize \target-region) .show view
+	
+	add-material: !->
+		console.info 'Add material route'
+		view = new AddMaterialView!
 		@get-option (camelize \target-region) .show view
 	
 	
