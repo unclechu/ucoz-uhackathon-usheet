@@ -11,4 +11,4 @@
 class MaterialsCollection extends B.Collection
 	url: '/site/blog_list'
 	model: MaterialModel
-	comparator: -> [(it.get camelize \add-date), (it.get \title)]
+	comparator: -> -(it.get camelize \add-date)
