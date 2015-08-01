@@ -1,0 +1,18 @@
+.panel.panel-default
+	.panel-heading
+		h5 Поиск материалов по привязанным сайтам
+	.panel-body
+		form.input-group
+			input.search-query.form-control(
+				type='text'
+				value=''
+				placeholder='Введите текст…'
+			)
+			span.input-group-btn
+				button.search.btn.btn-info Найти
+	table.table
+		thead
+			th URL сайта
+			th Заголовок
+			th Описание
+		tbody

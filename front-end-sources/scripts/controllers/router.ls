@@ -8,6 +8,7 @@
 	WaitView
 	SitesListView
 	AddSiteView
+	SearchListView
 ) <- define <[
 	jquery
 	marionette
@@ -18,6 +19,7 @@
 	views/wait
 	views/sites/list
 	views/sites/add
+	views/search/list
 ]>
 
 {camelize, Obj, and-list} = require \prelude-ls
@@ -159,5 +161,5 @@ class Router extends M.AppRouter
 	
 	search: !->
 		console.info 'Search route'
-		view = new WaitView!
+		view = new SearchListView!
 		@get-option (camelize \target-region) .show view
