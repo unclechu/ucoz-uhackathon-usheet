@@ -19,6 +19,11 @@ class SitesItemView extends M.ItemView
 	
 	rm: (e)!->
 		e.prevent-default!
+		
+		return unless confirm "
+			Вы действительно хотите отвязать сайт #{@model.get \url}?
+		"
+		
 		const model = @model.clone!
 		model.url = \/site/remove
 		model.save {}, do
