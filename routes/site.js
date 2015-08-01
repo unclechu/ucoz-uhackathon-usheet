@@ -134,9 +134,7 @@ var SiteRoute = {
 								
 								var api = new U.lib.UCozApi(params);
 								
-								console.log('query', query);
-								
-								api.exec('/search', 'get', {query: 'кровь'}, function(err, r) {
+								api.exec('/search', 'get', {query: query}, function(err, r) {
 									if (err) return cb(err);
 									
 									if ( ! r.results) return cb();
@@ -375,7 +373,10 @@ var SiteRoute = {
 	
 	
 	publishBlog: function(req, res) {
-		var scope = {};
+		var scope = {
+			sites   : [],
+			results : {}
+		};
 		var data = req.body;
 		
 		if ( ! data.title) {
@@ -393,11 +394,13 @@ var SiteRoute = {
 		U.async.series(
 			[
 				function(cb) {
-					req.user.getSites({isAPI: true}, cb.ok(function(sites) {
+					req.user.getSites({isAPI: true},function(err, sites) {
+						if (err) return cb(err);
+						
 						scope.sites = sites;
 						
 						cb()
-					}));
+					});
 				},
 				
 				function(cb) {
@@ -408,7 +411,6 @@ var SiteRoute = {
 							
 							var api = new U.lib.UCozApi(params);
 							
-							
 							api.exec(
 								'/blog',
 								'post',
@@ -418,6 +420,8 @@ var SiteRoute = {
 									'message'     : data.message
 								},
 								function(err, r) {
+									console.log('blog', site.url, err, r);
+									
 									if (err) return cb(err); 
 									
 									scope.results[site._id] = r;
@@ -431,7 +435,7 @@ var SiteRoute = {
 				}
 			],
 			res.ok(function(){
-				console.log('scope.results', scope.results);
+				//console.log('scope.results', scope.results);
 				
 				res.json(scope.results);
 			})
