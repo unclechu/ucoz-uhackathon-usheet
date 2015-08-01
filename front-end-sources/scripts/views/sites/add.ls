@@ -61,6 +61,16 @@ class AddSiteView extends M.CompositeView
 	add-site: (e)!->
 		e.prevent-default!
 		@ajax-block!
+		
+		const $required =
+			@$ 'input[type=text][required]'
+			|> (.filter -> ! $ this .val!)
+		if $required.length > 0
+			window.alert 'Не заполнены обязательные поля!'
+			@ajax-free!
+			$required.eq 0 .focus!
+			return
+		
 		site-model = new SiteModel!
 		data =
 			@ui.form.serialize-array!
