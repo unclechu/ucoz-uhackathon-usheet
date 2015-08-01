@@ -67,7 +67,7 @@ function stylesItemHandler(logName, file, enc, cb) {
 				bootstrap(),
 				function (style) {
 					style.define('REVISION', REVISION);
-					style.define('STATIC_DIR', '/public/');
+					style.define('STATIC_DIR', '/'+ cfg.staticRoute +'/');
 				},
 			],
 		}))

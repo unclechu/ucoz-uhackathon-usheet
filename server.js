@@ -23,8 +23,9 @@ GLOBAL.U = {
 };
 
 
-var staticPath = 'public';
-var revision = 1;
+var staticRoute = cfg.staticRoute;
+var staticPath  = 'public';
+var revision    = 1;
 
 var app = express();
 app.use(require('express-domain-middleware'));
@@ -43,7 +44,7 @@ app.use(sessions(cfg.session));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(path.join('/', staticPath), express.static(staticPath));
+app.use(path.join('/', staticRoute), express.static(staticPath));
 
 app.locals.isDebug  = cfg.isDebug ? true : false;
 app.locals.revision = revision;
@@ -52,7 +53,7 @@ app.locals.staticFile = function (file) {
 	while (file.charAt(0) === '/') {
 		file = file.slice(1);
 	}
-	return path.join('/', staticPath, file) + '?v=' + revision;
+	return path.join('/', staticRoute, file) + '?v=' + revision;
 };
 
 app.locals.staticDir = function (dir) {
@@ -62,7 +63,7 @@ app.locals.staticDir = function (dir) {
 	while (dir.charAt(0) === '/') {
 		dir = dir.slice(1);
 	}
-	return path.join('/', staticPath, dir);
+	return path.join('/', staticRoute, dir);
 };
 
 

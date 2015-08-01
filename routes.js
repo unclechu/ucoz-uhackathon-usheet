@@ -29,15 +29,15 @@ module.exports = function (app) {
 			
 			$.bridge(social.authBridh, function ($) {
 				$.bridge('/site', function ($) {
-					$.get  ( '/add'    ) .to(site.form);
-					$.post  ( '/edit'    ) .to(site.edit);
-					$.post  ( '/remove'    ) .to(site.remove);
-					$.post ( '/search' ) .to(site.search);
-					$.post ( '/add'    ) .to(site.add);
-					$.get ( '/list'   ) .to(site.list);
-					$.get ( '/blog_list'   ) .to(site.blogList);
-					$.post ( '/remove' ) .to(site.remove);
-					$.get('/search').to(site.search);
+					$.get  ( '/add'       ) .to(site.form);
+					$.post ( '/edit'      ) .to(site.edit);
+					$.post ( '/remove'    ) .to(site.remove);
+					$.post ( '/search'    ) .to(site.search);
+					$.post ( '/add'       ) .to(site.add);
+					$.get  ( '/list'      ) .to(site.list);
+					$.get  ( '/blog_list' ) .to(site.blogList);
+					$.post ( '/remove'    ) .to(site.remove);
+					$.get  ( '/search'    ) .to(site.search);
 				});
 				
 				$.bridge('/publish', function($) {
