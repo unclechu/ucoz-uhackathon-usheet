@@ -13,5 +13,6 @@
   },
   "ulogin": {
     "callbackUrl": "//localhost:3000/ulogin/callback"
-  }
+  },
+  "staticRoute": "public-static"
 }
