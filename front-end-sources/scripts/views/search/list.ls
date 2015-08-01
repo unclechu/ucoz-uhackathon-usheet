@@ -44,6 +44,12 @@ class SearchListView extends M.CompositeView
 	search: (e)!->
 		e.prevent-default!
 		@ajax-block!
+		
+		unless @ui.query.val!
+			window.alert 'Строка поиска не заполнена'
+			@ui.query.focus!
+			return
+		
 		@collection.url = "
 			/site/search?query=#{@ui.query.val! |> encodeURIComponent}
 		"
