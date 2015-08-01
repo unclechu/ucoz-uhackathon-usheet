@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var mongoose = require('mongoose');
 
 var SiteRoute = {
 	
@@ -8,13 +9,113 @@ var SiteRoute = {
 		res.render('site/add.jade');
 	},
 	
+	
+	remove: function(req, res) {
+		var _id = req.body._id;
+		if ( ! _id) {
+			return res.status(500).json({error: {msg: "_id not defined"}})
+		}
+		
+		U.model.site
+			.remove({
+				_id: mongoose.Types.ObjectId(_id)
+			})
+			.exec(res.ok(function() {
+				return res.json({status: 'success'});
+			}));
+	},
+	
+	
+	edit: function(req, res) {
+		var data = req.body;
+		var siteData = {
+			userId  : req.body,
+			url     : data.url.replace(/https?:\/\//, ''),
+			ucozApi : {
+				consumer_key       : data.consumer_key,
+				consumer_secret    : data.consumer_secret,
+				oauth_token        : data.oauth_token,
+				oauth_token_secret : data.oauth_token_secret
+			}
+		};
+		
+		var site = new U.model.site(siteData);
+		
+		site.validate(function(err) {
+			if (err) {
+				return res.status(500).json({error: err});
+			}
+			
+			// Проверка на включенность API
+			U.async.map(
+				[
+					{
+						url: 'blog'
+					},
+					{
+						url       :'search',
+						addParams : {
+							query: "123"
+						}
+					}
+				],
+				
+				function(p, cb) {
+					try {
+						var params = _.extend({url: data.url}, site.ucozApi.toObject());
+						//console.log('params', params);
+						var api = new U.lib.UCozApi(params);
+						
+						api.exec('/' + p.url, 'get', p.addParams, function(err, r) {
+							if (err) return cb(err); 
+							
+							console.log('add site', err, r.error);
+							
+							if ( ! err && ! r.error) {
+								site.isAPI = true;
+							}
+							
+							cb();
+						});
+					} catch(e) {
+						console.log('errrrr', e);
+						cb(e);
+					}
+				},
+				res.ok(function() {
+					if (site.isAPI) {
+						site.save(function(err) {
+							console.log('err', err);
+							if (err) {
+								res.status(500).json(err);
+							} else {
+								res.json(site.toObject())
+							}
+						})
+					} else {
+						return res.status(500).json({error: {msg: "api should be turn off"}})
+					}
+				})
+			);
+		});
+	},
+	
 	add: function(req, res) {
 		var data = req.body;
 		data.userId = req.user._id;
 		
 		data.url = data.url.replace(/https?:\/\//, '');
 		
-		var site = new U.model.site(data);
+		var site = new U.model.site({
+			url: data.url,
+			ucozAPI: {
+				consumer_key: data.consumer_key,
+				consumer_secret: data.consumer_secret,
+				oauth_token: data.oauth_token,
+				oauth_token_secret: data.oauth_token_secret
+			}
+		});
+		
 		site.validate(function(err) {
 			if (err) {
 				return res.status(500).json({error: err});
@@ -55,6 +156,7 @@ var SiteRoute = {
 				res.ok(function() {
 					if (site.isAPI) {
 						site.save(function(err) {
+							console.log('err', err);
 							if (err) {
 								res.status(500).json(err);
 							} else {
@@ -66,7 +168,7 @@ var SiteRoute = {
 					}
 				})
 			);
-		})
+		});
 	},
 	
 	list: function(req, res) {
@@ -74,11 +176,143 @@ var SiteRoute = {
 			res.json(
 				sites.map(function(site) {
 					return {
-						url: site.url
+						_id : site._id,
+						url : site.url
 					};
 				})
 			)
 		}));
+	},
+	
+	
+	publishPage: function(req, res) {
+		var scope = {};
+		var data = req.body;
+		
+		if ( ! data.title) {
+			return res.status(500).json({error: "title in empty"});
+		}
+		
+		if ( ! data.description) {
+			return res.status(500).json({error: "description in empty"});
+		}
+		
+		if ( ! data.message) {
+			return res.status(500).json({error: "message in empty"});
+		}
+		
+		U.async.series(
+			[
+				function(cb) {
+					req.user.getSites({isAPI: true}, cb.ok(function(sites) {
+						scope.sites = sites;
+						
+						cb()
+					}));
+				},
+				
+				function(cb) {
+					U.async.map(
+						scope.sites,
+						function(site, cb) {
+							var params = _.extend({url: site.url}, site.ucozApi.toObject());
+							params.url = site.url;
+							var api = new U.lib.UCozApi(params);
+							
+							api.exec(
+								'/publ',
+								'post',
+								{
+									'title'       : data.title,
+									'description' : data.description,
+									'message'     : data.message
+								},
+								function(err, r) {
+									if (err) return cb(err);
+									
+									scope.results[site._id] = r;
+									
+									cb();
+								}
+							);
+						},
+						cb
+					);
+				}
+			],
+			function(err){
+				if (err) return res.json({error: err});
+				
+				console.log('scope.results', scope.results);
+				
+				res.json(scope.results);
+			}
+		)
+	},
+	
+	
+	publishBlog: function(req, res) {
+		var scope = {};
+		var data = req.body;
+		
+		if ( ! data.title) {
+			return res.status(500).json({error: "title in empty"});
+		}
+		
+		if ( ! data.description) {
+			return res.status(500).json({error: "description in empty"});
+		}
+		
+		if ( ! data.message) {
+			return res.status(500).json({error: "message in empty"});
+		}
+		
+		U.async.series(
+			[
+				function(cb) {
+					req.user.getSites({isAPI: true}, cb.ok(function(sites) {
+						scope.sites = sites;
+						
+						cb()
+					}));
+				},
+				
+				function(cb) {
+					U.async.map(
+						scope.sites,
+						function(site, cb) {
+							var params = _.extend({url: site.url}, site.ucozApi.toObject());
+							
+							var api = new U.lib.UCozApi(params);
+							
+							
+							api.exec(
+								'/blog',
+								'post',
+								{
+									'title'       : data.title,
+									'description' : data.description,
+									'message'     : data.message
+								},
+								function(err, r) {
+									if (err) return cb(err); 
+									
+									scope.results[site._id] = r;
+									
+									cb();
+								}
+							);
+						},
+						cb
+					);
+				}
+			],
+			res.ok(function(){
+				console.log('scope.results', scope.results);
+				
+				res.json(scope.results);
+			})
+		)
 	},
 	
 	
@@ -106,7 +340,7 @@ var SiteRoute = {
 					U.async.map(
 						scope.sites,
 						function(site, cb) {
-							var params = _.extend({url   : site.url}, site.ucozApi.toObject());
+							var params = _.extend({url: site.url}, site.ucozApi.toObject());
 							
 							var api = new U.lib.UCozApi(params);
 							
