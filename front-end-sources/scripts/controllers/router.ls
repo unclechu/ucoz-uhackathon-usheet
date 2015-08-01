@@ -9,6 +9,7 @@
 	SitesListView
 	AddSiteView
 	SearchListView
+	MaterialsListView
 ) <- define <[
 	jquery
 	marionette
@@ -20,6 +21,7 @@
 	views/sites/list
 	views/sites/add
 	views/search/list
+	views/materials/list
 ]>
 
 {camelize, Obj, and-list} = require \prelude-ls
@@ -155,7 +157,7 @@ class Router extends M.AppRouter
 	
 	materials: !->
 		console.info 'Materials route'
-		view = new WaitView!
+		view = new MaterialsListView!
 		@get-option (camelize \target-region) .show view
 	
 	
