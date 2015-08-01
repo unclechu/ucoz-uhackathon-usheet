@@ -20,9 +20,10 @@ class AddMaterialView extends M.LayoutView
 		\add    : 'button.add-material'
 		\back   : 'button.back-to-list'
 		\form   : 'form.add-material'
-		\inputs : 'input, button'
+		\inputs : 'input, button, textarea'
 		\ititle : 'input[name=title]'
 		\imsg   : 'textarea[name=message]'
+		\idesc  : 'textarea[name=description]'
 	
 	events:
 		do
@@ -51,8 +52,9 @@ class AddMaterialView extends M.LayoutView
 		
 		const material-model = new MaterialModel!
 		data =
-			title   : @ui.ititle.val!
-			message : @ui.imsg.val!
+			title       : @ui.ititle.val!
+			description : @ui.idesc.val!
+			message     : @ui.imsg.val!
 		material-model.save data, do
 			success: !~>
 				B.history.navigate \materials, trigger: on

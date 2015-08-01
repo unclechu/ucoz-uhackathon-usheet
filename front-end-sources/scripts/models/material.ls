@@ -12,6 +12,7 @@ class MaterialModel extends B.Model
 		<[
 			title
 			message
+			description
 			site-url
 			url
 			add-date
