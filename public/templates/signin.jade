@@ -4,7 +4,15 @@
 		form.ucoz-auth.panel.panel-primary
 			.panel-heading Вход через uCoz
 			.panel-body
-				button.ucoz-enter.btn.btn-success Войти через uCoz
+				button.ucoz-enter.btn.btn-success
+					img.logo(
+						alt='U Soft Logo'
+						src=staticDir + '/ulogo.svg'
+						width=18
+						height=18
+					)
+					=' '
+					| Войти через uCoz
 				iframe.ucoz-auth-wrapper
 		form.login-password-auth.panel.panel-info
 			.panel-heading Вход по логину и паролю
