@@ -8,7 +8,7 @@
 
 class SiteModel extends B.Model
 	
-	url: '/site/edit'
+	url: '/site/add'
 	
 	defaults:
 		<[
