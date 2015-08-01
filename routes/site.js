@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var mongoose = require('mongoose');
+var moment = require('moment');
 
 var SiteRoute = {
 	
@@ -199,6 +200,7 @@ var SiteRoute = {
 									r.blogs.forEach(function(blog) {
 										scope.results.push({
 											siteUrl : site.url,
+											addDate : moment.utc(blog.add_date).toDate().getTime(),
 											title   : blog.title,
 											url     : blog.entry_url,
 											message : blog.message
@@ -378,8 +380,9 @@ var SiteRoute = {
 					'message'        : data.message,
 					'publishedSites' : Object.keys(scope.results).map(function(siteId) {
 						return {
-							id     : scope.results[siteId].id,
-							siteId : scope.results[siteId].siteId
+							id      : scope.results[siteId].id,
+							siteId  : scope.results[siteId].siteId,
+							addDate : moment.utc(scope.results[siteId].add_date).toDate().getTime()
 						};
 					})
 				});
@@ -401,7 +404,9 @@ var SiteRoute = {
 		U.model.material.find({modulaName: 'blog'}).exec(res.ok(function(materials) {
 			res.json(
 				materials.map(function(material) {
-					return _.pick(material, ['title', 'message', 'description']);
+					var obj = _.pick(material, ['title', 'message', 'description']);
+					obj.dateCreated = material.dateCreated.getTime();
+					return obj;
 				})
 			)
 		}));
@@ -478,8 +483,9 @@ var SiteRoute = {
 					'message'        : data.message,
 					'publishedSites' : Object.keys(scope.results).map(function(siteId) {
 						return {
-							id     : scope.results[siteId].id,
-							siteId : scope.results[siteId].siteId
+							id      : scope.results[siteId].id,
+							siteId  : scope.results[siteId].siteId,
+							addDate : moment.utc(scope.results[siteId].add_date).toDate().getTime()
 						};
 					})
 				});

@@ -28,6 +28,7 @@
     "livescript": "^1.4.0",
     "lodash": "^3.10.0",
     "method-override": "^2.3.4",
+    "moment": "^2.10.6",
     "mongoose": "^4.1.0",
     "multer": "^1.0.1",
     "nib": "^1.1.0",

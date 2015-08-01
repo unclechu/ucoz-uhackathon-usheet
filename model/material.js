@@ -4,9 +4,7 @@ var _ = require('lodash');
 
 var MaterialItemScheme = mongoose.Schema({
 	id: {
-		type     : String,
-		unique   : true,
-		required : true
+		type     : String
 	},
 	siteId: {
 		type    : [mongoose.Types.ObjectId],
@@ -31,6 +29,10 @@ var MaterialScheme = mongoose.Schema({
 	publishedSites: {
 		type    : [MaterialItemScheme],
 		default : []
+	},
+	dateCreated : {
+		type    : Date,
+		default : Date.now
 	},
 	modulaName: {
 		type     : String,
