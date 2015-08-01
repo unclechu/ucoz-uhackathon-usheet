@@ -30,16 +30,20 @@ module.exports = function (app) {
 			$.bridge(social.authBridh, function ($) {
 				$.bridge('/site', function ($) {
 					$.get  ( '/add'    ) .to(site.form);
+					$.post  ( '/edit'    ) .to(site.edit);
+					$.post  ( '/remove'    ) .to(site.remove);
 					$.post ( '/search' ) .to(site.search);
 					$.post ( '/add'    ) .to(site.add);
 					$.post ( '/list'   ) .to(site.list);
 					$.post ( '/remove' ) .to(site.remove);
 				});
-			})
-			//$.get('/login/ucoz').to(ucoz.in);
-			//$.get('/add/ucoz').to(ucoz.in);
-			//$.get('/callback/callback').to(ucoz.callback);
-			
+				
+				$.bridge('/publish', function($) {
+					$.post('/blog').to(site.publishBlog);
+					$.post('/page').to(site.publishPage);
+					
+				});
+			});
 			
 			// test routes TODO remove
 			$.get('/login').to(social.loginForm);

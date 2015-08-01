@@ -7,7 +7,7 @@ var Route = {
 				req.user = user;
 			}
 			
-			console.log('req.user', req.session.userId, err, user);
+			console.log('req.user', req.session.userId);
 			
 			next();
 		})

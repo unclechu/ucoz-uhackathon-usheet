@@ -90,15 +90,15 @@ var Social = {
 		var token = req.body.token;
 		var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 		
+		
 		if (token && ip) {
 			request(
 				'http://ulogin.ru/token.php?token=' + token + '&host=' + ip,
 				function (error, response, body) {
-					
 					var query = {};
 					
 					if (error || response.statusCode !== 200) {
-						res.status(500).end('error');
+						return res.status(500).end('error');
 					} else {
 						try {
 							var data = JSON.parse(body);
@@ -115,7 +115,6 @@ var Social = {
 						}
 						
 						U.model.user.findOne(query).exec(res.ok(function (user) {
-							
 							if (user) {
 								req.session.userId   = user._id;
 								req.session.username = 'uid'+user.uid;
@@ -166,6 +165,7 @@ var Social = {
 				next(err);
 				return;
 			}
+			
 			
 			if ( ! user) {
 				// incorrect login or password
