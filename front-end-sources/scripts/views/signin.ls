@@ -87,7 +87,7 @@ class SignInView extends M.LayoutView
 							window.alert 'Произошла ошибка авторизации'
 							@ajax-free!
 							@ui.iemail.focus!
-					error: !-> throw new Error 'Cannot fetch AuthModel'
+					error: !-> window.alert 'Произошла ошибка получения данных авторизации'
 			.fail (jq-xhr)!~>
 				return unless @ajax?
 				if jq-xhr.status is 406

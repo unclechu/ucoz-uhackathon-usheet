@@ -32,7 +32,8 @@ class Application extends M.Application
 	on-start: !(opts)->
 		
 		const auth-model = Wreqr.radio.reqres.request \global, \auth-model
-		auth-model.fetch error: !-> throw new Error 'Cannot fetch AuthModel'
+		auth-model.fetch error: !->
+			window.alert 'Произошла ошибка получения данных авторизации'
 		auth-model.start-auto-fetch!
 		
 		@root-view = new RootView el: @container .render!

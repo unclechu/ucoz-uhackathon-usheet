@@ -132,7 +132,8 @@ class Router extends M.AppRouter
 						if it.get camelize \is-auth
 							window.alert 'Произошла ошибка разлогивания'
 						B.history.navigate '', trigger: on, replace: yes
-					error: !-> throw new Error 'Cannot fetch AuthModel'
+					error: !->
+						window.alert 'Произошла ошибка получения данных авторизации'
 			.fail (jq-xhr)!~>
 				window.alert 'Произошла ошибка разлогивания'
 				B.history.navigate '', trigger: on, replace: yes

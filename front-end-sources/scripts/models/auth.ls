@@ -14,7 +14,9 @@ class AuthModel extends B.Model
 			!~>
 				@fetch do
 					success: !~> @auto-fetch-iteration!
-					error:   !-> throw new Error 'Cannot fetch AuthModel'
+					error:   !~>
+						console.error new Error 'Cannot fetch AuthModel'
+						@auto-fetch-iteration!
 			|> set-timeout _, @auto-fetch-interval
 	start-auto-fetch: !-> @auto-fetch-iteration!
 	stop-auto-fetch: !-> clear-timeout @auto-fetch-timer-id
