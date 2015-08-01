@@ -16,8 +16,9 @@ GLOBAL.U = {
 	db    : require('./model/db')(cfg.db),
 	async : require('async'),
 	model : {
-		user : require('./model/user'),
-		site : require('./model/site')
+		user     : require('./model/user'),
+		site     : require('./model/site'),
+		material : require('./model/material')
 	},
 	lib   : require('./lib')
 };

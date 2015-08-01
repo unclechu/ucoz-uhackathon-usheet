@@ -436,9 +436,25 @@ var SiteRoute = {
 				}
 			],
 			res.ok(function(){
-				//console.log('scope.results', scope.results);
+				var m = new U.model.material({
+					'title'          : data.title,
+					'description'    : data.description,
+					'message'        : data.message,
+					'publishedSites' : Object.keys(scope.results).map(function(siteId) {
+						return {
+							id     : scope.results[siteId].id,
+							siteId : scope.results[siteId].siteId
+						};
+					})
+				});
 				
-				res.json(scope.results);
+				m.save(function(err) {
+					if (err) {
+						res.status(500).json({error: {msg: err}})
+					} else {
+						res.json(scope.results);
+					}
+				});
 			})
 		)
 	},
