@@ -3,11 +3,13 @@
 	B
 	tpl
 	SitesItemView
+	SitesCollection
 ) <- define <[
 	marionette
 	backbone
 	tpl!sites/list
 	views/sites/item
+	collections/sites/list
 ]>
 
 {Obj, camelize} = require \prelude-ls
@@ -17,6 +19,12 @@ class SitesListView extends M.CompositeView
 	template: tpl
 	child-view: SitesItemView
 	child-view-container: '@ui.list'
+	
+	initialize: !->
+		@collection = new SitesCollection
+		super ...
+		@collection.fetch do
+			error: !-> window.alert 'Ошибка получения списка привязанных сайтов'
 	
 	ui:
 		\add  : 'button.add-site'
