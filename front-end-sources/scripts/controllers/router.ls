@@ -66,6 +66,7 @@ class Router extends M.AppRouter
 		const routes-prevent-auth  = @routes-prevent-auth
 		
 		[
+			@auth-model.is-fetched
 			@auth-model.get camelize \is-auth |> (not)
 			B.history.fragment |> (.split \/) |> (.0) |> (in routes-required-auth)
 		] |> and-list |> !->
