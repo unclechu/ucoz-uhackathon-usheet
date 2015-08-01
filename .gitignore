@@ -1,5 +1,6 @@
 .idea
 *.fot
+*.log
 
 node_modules
 bower_components
