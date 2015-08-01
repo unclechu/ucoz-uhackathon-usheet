@@ -20,3 +20,6 @@ class SiteModel extends B.Model
 		]>
 		|> map (-> [it, ''])
 		|> pairs-to-obj
+		|> ->
+			it <<< do
+				_id: null
