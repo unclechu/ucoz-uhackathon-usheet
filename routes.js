@@ -34,8 +34,10 @@ module.exports = function (app) {
 					$.post  ( '/remove'    ) .to(site.remove);
 					$.post ( '/search' ) .to(site.search);
 					$.post ( '/add'    ) .to(site.add);
-					$.post ( '/list'   ) .to(site.list);
+					$.get ( '/list'   ) .to(site.list);
+					$.get ( '/blog_list'   ) .to(site.blogList);
 					$.post ( '/remove' ) .to(site.remove);
+					$.get('/search').to(site.search);
 				});
 				
 				$.bridge('/publish', function($) {
@@ -49,7 +51,7 @@ module.exports = function (app) {
 			$.get('/login').to(social.loginForm);
 			$.get('/reg').to(social.registerForm);
 			$.get('/user/create').to(index.createUser);
-			//$.get('/search').to(index.search);
+			
 			$.get('/test2').to(function (req, res) {
 				setTimeout(function () {
 					throw new Error('1234');

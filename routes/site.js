@@ -100,15 +100,138 @@ var SiteRoute = {
 		});
 	},
 	
+	
+	search: function(req, res) {
+		var query = req.param('query');
+		
+		if ( ! query) {
+			return res.status(500).json({error: {msg: "query not defined"}});
+		}
+		
+		var scope = {
+			sites   : [],
+			results : []
+		};
+		
+		U.async.series(
+			[
+				function(cb) {
+					U.model.site.find({isAPI: true}).exec(function(err, sites) {
+						if (err) return cb(err);
+						
+						scope.sites = sites;
+						
+						cb();
+					})
+				},
+				
+				function (cb) {
+					U.async.map(
+						scope.sites,
+						function(site, cb) {
+							try {
+								var params = _.extend({url: site.url.replace(/\/$/, '')}, site.ucozApi.toObject());
+								
+								var api = new U.lib.UCozApi(params);
+								
+								console.log('query', query);
+								
+								api.exec('/search', 'get', {query: 'кровь'}, function(err, r) {
+									if (err) return cb(err);
+									
+									if ( ! r.results) return cb();
+									
+									r.results.forEach(function(result) {
+										scope.results.push({
+											url         : site.url,
+											title       : result.title,
+											description : result.description,
+											message     : result.message
+										});
+									});
+									
+									cb();
+								});
+							} catch(e) {
+								cb(e);
+							}
+						},
+						cb
+					);
+				}
+			],
+			res.ok(function() {
+				res.json(scope.results);
+			})
+		);
+	},
+	
+	
+	blogList: function(req, res) {
+		var scope = {
+			sites   : [],
+			results : []
+		};
+		
+		U.async.series(
+			[
+				function(cb) {
+					U.model.site.find({isAPI: true}).exec(function(err, sites) {
+						if (err) return cb(err);
+						
+						scope.sites = sites;
+						
+						cb();
+					})
+				},
+				
+				function (cb) {
+					U.async.map(
+						scope.sites,
+						function(site, cb) {
+							try {
+								var params = _.extend({url: site.url}, site.ucozApi.toObject());
+								
+								var api = new U.lib.UCozApi(params);
+								
+								api.exec('/blog', 'get', null, function(err, r) {
+									if (err) return cb(err);
+									
+									r.blogs.forEach(function(blog) {
+										scope.results.push({
+											url     : site.url,
+											title   : blog.title,
+											message : blog.message,
+										});
+									});
+									
+									cb();
+								});
+							} catch(e) {
+								cb(e);
+							}
+						},
+						cb
+					);
+				}
+			],
+			res.ok(function() {
+				res.json(scope.results);
+			})
+		);
+	},
+	
 	add: function(req, res) {
 		var data = req.body;
 		data.userId = req.user._id;
 		
 		data.url = data.url.replace(/https?:\/\//, '');
+		data.url = data.url.replace(/\/$/, '');
 		
 		var site = new U.model.site({
-			url: data.url,
-			ucozAPI: {
+			url     : data.url,
+			userId  : req.user._id,
+			ucozApi : {
 				consumer_key: data.consumer_key,
 				consumer_secret: data.consumer_secret,
 				oauth_token: data.oauth_token,
@@ -316,60 +439,60 @@ var SiteRoute = {
 	},
 	
 	
-	search: function(req, res) {
-		var scope = {},
-			query = req.body.query;
-		
-		if ( ! query || query.length < 2) {
-			return res.status(500).json({error: "query very small"});
-		}
-		
-		U.async.series(
-			[
-				function(cb) {
-					req.user.getSites({isAPI: true}, cb.ok(function(sites) {
-						scope.sites = sites;
-						
-						cb();
-					}));
-				},
-				
-				function(cb) {
-					var results = {};
-					
-					U.async.map(
-						scope.sites,
-						function(site, cb) {
-							var params = _.extend({url: site.url}, site.ucozApi.toObject());
-							
-							var api = new U.lib.UCozApi(params);
-							
-							api.exec('/search', 'get', {query : query}, cb.ok(function(r) {
-								if ( ! r.error) {
-									results[site._id] = r;
-								}
-								
-								cb();
-							}));
-						},
-						cb.ok(function() {
-							scope.searchs = Object.keys(results).map(function(siteId) {
-								return {
-									siteId : siteId,
-									data   : results[siteId]
-								};
-							});
-							
-							cb();
-						})
-					)
-				}
-			],
-			res.ok(function() {
-				res.json(scope.searchs);
-			})
-		);
-	},
+	//search: function(req, res) {
+	//	var scope = {},
+	//		query = req.body.query;
+	//	
+	//	if ( ! query || query.length < 2) {
+	//		return res.status(500).json({error: "query very small"});
+	//	}
+	//	
+	//	U.async.series(
+	//		[
+	//			function(cb) {
+	//				req.user.getSites({isAPI: true}, cb.ok(function(sites) {
+	//					scope.sites = sites;
+	//					
+	//					cb();
+	//				}));
+	//			},
+	//			
+	//			function(cb) {
+	//				var results = {};
+	//				
+	//				U.async.map(
+	//					scope.sites,
+	//					function(site, cb) {
+	//						var params = _.extend({url: site.url}, site.ucozApi.toObject());
+	//						
+	//						var api = new U.lib.UCozApi(params);
+	//						
+	//						api.exec('/search', 'get', {query : query}, cb.ok(function(r) {
+	//							if ( ! r.error) {
+	//								results[site._id] = r;
+	//							}
+	//							
+	//							cb();
+	//						}));
+	//					},
+	//					cb.ok(function() {
+	//						scope.searchs = Object.keys(results).map(function(siteId) {
+	//							return {
+	//								siteId : siteId,
+	//								data   : results[siteId]
+	//							};
+	//						});
+	//						
+	//						cb();
+	//					})
+	//				)
+	//			}
+	//		],
+	//		res.ok(function() {
+	//			res.json(scope.searchs);
+	//		})
+	//	);
+	//},
 	
 	
 	remove: function(req, res) {
