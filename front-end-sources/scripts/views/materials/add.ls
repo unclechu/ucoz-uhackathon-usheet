@@ -8,6 +8,7 @@
 	backbone
 	tpl!materials/add
 	models/material
+	jquery.ckeditor
 ]>
 
 {Obj, camelize, obj-to-pairs, map, pairs-to-obj} = require \prelude-ls
@@ -36,6 +37,13 @@ class AddMaterialView extends M.LayoutView
 	ajax-free: !->
 		@ui.inputs.prop \disabled false
 		delete @ajax
+	
+	on-render: !->
+		!~>
+			return if @ui.imsg.length < 1
+			@ui.imsg.ckeditor!
+			@ui.idesc.ckeditor!
+		|> set-timeout _, 1
 	
 	add-material: (e)!->
 		e.prevent-default!

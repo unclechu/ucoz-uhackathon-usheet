@@ -47,6 +47,8 @@ bower-libs-paths =
 		"marionette/lib/backbone.marionette#{unless d then \.min else ''}"
 	text:
 		"text/text"
+	\jquery.ckeditor :
+		"ckeditor/adapters/jquery"
 
 # bower prefix
 bower-libs-paths |>= Obj.map (-> "bower/#{it}")
