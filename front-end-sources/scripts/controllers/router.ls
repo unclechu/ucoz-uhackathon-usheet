@@ -18,7 +18,7 @@
 	views/sites/list
 ]>
 
-{camelize, Obj, all} = require \prelude-ls
+{camelize, Obj, and-list} = require \prelude-ls
 
 class Router extends M.AppRouter
 	
@@ -38,6 +38,7 @@ class Router extends M.AppRouter
 		|> Obj.map (-> it |> camelize)
 	
 	routes-required-auth: <[ sites materials logout search ]>
+	routes-prevent-auth:  <[ sign-in sign-out ]>
 	
 	initialize: !(opts)->
 		super ...
@@ -47,13 +48,27 @@ class Router extends M.AppRouter
 	get-option: M.proxy-get-option
 	
 	check-auth: !->
+		
 		const routes-required-auth = @routes-required-auth
-		if [
+		const routes-prevent-auth  = @routes-prevent-auth
+		
+		[
 			@auth-model.get camelize \is-auth |> (not)
 			B.history.fragment |> (in routes-required-auth)
-		] |> all
+		] |> and-list |> !->
+			return unless it
 			console.warn 'Lost authorization, redirecting to sign-in form'
 			B.history.navigate \sign-in, trigger: on
+		
+		[
+			@auth-model.get camelize \is-auth
+			B.history.fragment |> (in routes-prevent-auth)
+		] |> and-list |> !->
+			return unless it
+			console.warn 'Leave auth forms because we already authorized'
+			B.history.navigate '', trigger: on
+	
+	on-route: !-> @check-auth!
 	
 	main-route: !->
 		console.info 'Main route'
