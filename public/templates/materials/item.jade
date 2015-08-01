@@ -1,5 +1,8 @@
+- var d = new Date( addDate )
 td
 	h5= siteUrl
 td
 	h5
 		a(href=url target='_blank')= title
+td
+	h5= d.getDate() +'.'+ (d.getMonth()+1) +'.'+ d.getFullYear() +' '+ d.getHours() +':'+ d.getMinutes()

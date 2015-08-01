@@ -14,6 +14,7 @@ class MaterialModel extends B.Model
 			message
 			site-url
 			url
+			add-date
 		]>
 		|> map (-> [it |> camelize, ''])
 		|> pairs-to-obj

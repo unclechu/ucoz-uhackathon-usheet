@@ -6,8 +6,9 @@
 	models/material
 ]>
 
-{camelize, map, pairs-to-obj} = require \prelude-ls
+{camelize} = require \prelude-ls
 
 class MaterialsCollection extends B.Collection
 	url: '/site/blog_list'
 	model: MaterialModel
+	comparator: -> [(it.get camelize \add-date), (it.get \title)]
