@@ -21,6 +21,8 @@ class AddMaterialView extends M.LayoutView
 		\back   : 'button.back-to-list'
 		\form   : 'form.add-material'
 		\inputs : 'input, button'
+		\ititle : 'input[name=title]'
+		\imsg   : 'textarea[name=message]'
 	
 	events:
 		do
@@ -49,9 +51,8 @@ class AddMaterialView extends M.LayoutView
 		
 		const material-model = new MaterialModel!
 		data =
-			@ui.form.serialize-array!
-			|> map (-> [it.name, it.value])
-			|> pairs-to-obj
+			title   : @ui.ititle.val!
+			message : @ui.imsg.val!
 		material-model.save data, do
 			success: !~>
 				B.history.navigate \materials, trigger: on
