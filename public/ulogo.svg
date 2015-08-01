@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="413px"
+   height="413px"
+   viewBox="0 0 413 413"
+   version="1.1"
+   id="svg2"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="ulogo.svg">
+  <metadata
+     id="metadata17">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>LOGO Black</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#000000"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1278"
+     inkscape:window-height="1182"
+     id="namedview15"
+     showgrid="false"
+     inkscape:zoom="1"
+     inkscape:cx="257.93166"
+     inkscape:cy="205.86989"
+     inkscape:window-x="0"
+     inkscape:window-y="16"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="Page-1" />
+  <!-- Generator: Sketch 3.0.4 (8054) - http://www.bohemiancoding.com/sketch -->
+  <title
+     id="title4">LOGO Black</title>
+  <desc
+     id="desc6">Created with Sketch.</desc>
+  <defs
+     id="defs8" />
+  <g
+     id="Page-1"
+     stroke="none"
+     stroke-width="1"
+     fill="none"
+     fill-rule="evenodd"
+     sketch:type="MSPage">
+    <path
+       style="fill:#ffffff"
+       d="M 206.5,2 C 93.557769,2 2,93.557769 2,206.5 2,319.44223 93.557769,411 206.5,411 319.44223,411 411,319.44223 411,206.5 411,93.557769 319.44223,2 206.5,2 Z m -77.95054,113.48581 29.93188,0 0,121.77584 c 0,25.51468 20.67593,46.90366 46.18116,47.76335 0,0 1.96821,0.0716 2.21274,0.0716 0.15423,0 1.91293,-0.0639 1.91293,-0.0639 25.27371,-0.86291 45.77304,-22.07166 45.77304,-47.36876 l 0,-122.17816 29.86806,0 0,121.07566 c 0,43.0495 -34.72227,77.94473 -77.55403,77.94473 l -0.38492,0 c -43.04546,0.0936 -77.94086,-34.72417 -77.94086,-77.76872 l 0,-121.25167 z"
+       id="Oval-150"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>
