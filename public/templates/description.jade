@@ -1,0 +1,14 @@
+.panel.panel-success
+	.panel-heading
+		h5 Описание
+	.panel-body
+		p.
+			Добро пожаловать в личный кабинет крос-сайтовой админки uCoz.
+		p.
+			Здесь вы можете привязать несколько своих сайтов и публиковать
+			материалы одновременно на все из них.
+	if !isAuth
+		.panel-footer
+			.btn-group
+				button.go-signin.btn.btn-primary Вход
+				button.go-signup.btn.btn-warning Регистрация

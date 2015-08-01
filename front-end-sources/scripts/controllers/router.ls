@@ -11,6 +11,7 @@
 	SearchListView
 	MaterialsListView
 	AddMaterialView
+	DescriptionView
 ) <- define <[
 	jquery
 	marionette
@@ -24,6 +25,7 @@
 	views/search/list
 	views/materials/list
 	views/materials/add
+	views/description
 ]>
 
 {camelize, Obj, and-list} = require \prelude-ls
@@ -33,6 +35,7 @@ class Router extends M.AppRouter
 	routes:
 		do
 			''              : 'main-route'
+			'description'   : 'description'
 			
 			'search'        : 'search'
 			'sign-in'       : 'sign-in'
@@ -94,7 +97,7 @@ class Router extends M.AppRouter
 	main-route: !->
 		console.info 'Main route'
 		if @auth-model.get camelize \is-auth
-			B.history.navigate \sites,   trigger: on, replace: yes
+			B.history.navigate \description, trigger: on, replace: yes
 		else
 			B.history.navigate \sign-in, trigger: on, replace: yes
 	
@@ -102,6 +105,13 @@ class Router extends M.AppRouter
 		console.info 'Not found route'
 		window.alert 'Страница не найдена'
 		B.history.navigate '', trigger: on, replace: yes
+	
+	description: !->
+		
+		console.info 'Description route'
+		
+		view = new DescriptionView!
+		@get-option (camelize \target-region) .show view
 	
 	
 	sign-in: !->
